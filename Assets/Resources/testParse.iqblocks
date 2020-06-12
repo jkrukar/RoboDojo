@@ -1,0 +1,34 @@
+{
+  "wrkspace": "<xml xmlns=\"http://www.w3.org/1999/xhtml\"><variables><variable type=\"\" id=\"_2.^beQjx|FGt38A,8(E\" islocal=\"false\" iscloud=\"false\" arraylength=\"0\" arraywidth=\"0\">myVariable</variable></variables><block type=\"iq_events_when_started\" id=\".NsXwU_L.OuU1l7Sho$F\" x=\"70\" y=\"-10\"><next><block type=\"iq_looks_print\" id=\"P(=%`WfV|?HG[?6sKLxP\"><value name=\"DATA\"><shadow type=\"text\" id=\"CHp[61i|#0AT:UC!n39W\"><field name=\"TEXT\">Hello</field></shadow></value><next><block type=\"iq_drivetrain_drive_for\" id=\"DnfX1,I3Q`8uBTA3PCLC\"><field name=\"DIRECTION\">fwd</field><field name=\"UNITS\">in</field><field name=\"anddontwait_mutator\">FALSE</field><value name=\"AMOUNT\"><shadow type=\"math_number\" id=\"U]`]X@h@j_k-hFKKE|x*\"><field name=\"NUM\">1</field></shadow></value></block></next></block></next></block></xml>",
+  "rconfig": [
+    {
+      "port": [
+        1,
+        6,
+        0
+      ],
+      "name": "Drivetrain",
+      "customName": false,
+      "deviceType": "Drivetrain",
+      "setting": {
+        "type": "2-motor",
+        "wheelSize": "200mm",
+        "gearRatio": "1:1",
+        "direction": "fwd",
+        "gyroType": "none",
+        "width": "173",
+        "unit": "mm",
+        "wheelbase": "76",
+        "wheelbaseUnit": "mm"
+      }
+    }
+  ],
+  "slot": 0,
+  "cpp": "// Make sure all required headers are included.\n#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n#include <math.h>\n#include <string.h>\n\n\n#include \"iq_cpp.h\"\n\nusing namespace vex;\n\n// Brain should be defined by default\nbrain Brain;\n\n\n// START IQ MACROS\n#define waitUntil(condition)                                                   \\\n  do {                                                                         \\\n    wait(5, msec);                                                             \\\n  } while (!(condition))\n\n#define repeat(iterations)                                                     \\\n  for (int iterator = 0; iterator < iterations; iterator++)\n// END IQ MACROS\n\n\n// Robot configuration code.\nmotor LeftDriveSmart = motor(PORT1, 1, false);\nmotor RightDriveSmart = motor(PORT6, 1, true);\ndrivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart,200, 173, 76, mm, 1);\n\n//Vision sensor index vars.\nint Vision1_objectIndex = 0;\n\nint Brain_precision;\n\n\n// Generated code.\n\nfloat myVariable;\n\nint whenStarted1() {\n  Brain.Screen.print(\"Hello\");\n  Drivetrain.driveFor(1.0, inches, true);\nreturn 0;\n}\n\n\nint main() {\n\n\n  srand(vex::timer::system());\n\n\n\n  // pre event registration\n  // register event handlers\n\n  task::sleep(15);\n  // post event registration\n\n  // when started blocks...\n\n  whenStarted1();\n  return 0;\n}",
+  "cppStatus": "true",
+  "platform": "IQ",
+  "sdkVersion": "20200120.14.00.00",
+  "appVersion": "1.0.9-45",
+  "fileFormat": "0.1.0",
+  "icon": ""
+}
