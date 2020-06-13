@@ -10,6 +10,7 @@ public class Block
     public List<BlockValue> values = new List<BlockValue>();
     public List<BlockStatement> statements = new List<BlockStatement>();
     public Block nextBlock;
+    public bool finished = false;
 }
 
 public class BlockField
@@ -40,4 +41,18 @@ public class BlockShadow
 {
     public string type;
     public BlockField field;
+}
+
+public class BlockStack
+{
+    public Block startBlock;
+    public BlockStack returnStack;
+    public bool active = false;
+    public bool finished = false;
+
+    public BlockStack(Block block, BlockStack stack)
+    {
+        startBlock = block;
+        returnStack = stack;
+    }
 }

@@ -11,7 +11,8 @@ public class BlockParser : Singleton<BlockParser>
     private IQBlockFile blockFile;
     private XmlDocument fileXML;
     XmlNamespaceManager nsManager;
-    Block topBlock = null;
+    List<Block> topBlocks = new List<Block>();
+    public Stack<Block> blockStack = new Stack<Block>();
 
     //Variable maps
     Dictionary<string, bool> boolVariables = new Dictionary<string, bool>();
@@ -19,17 +20,81 @@ public class BlockParser : Singleton<BlockParser>
     Dictionary<string, int[]> intArrayVariables = new Dictionary<string, int[]>();
     Dictionary<string, int[,]> int2dArrayVariables = new Dictionary<string, int[,]>();
 
+    int controllerReadyCounter = 0;
+
     void Awake()
     {
-        BuildBlocksFromFile("Assets/Resources/variableTest.iqblocks");
+        BuildBlocksFromFile("Assets/Resources/read.iqblocks");
+
+        foreach(Block block in topBlocks) //Top blocks are always event blocks
+        {
+            EventsController.instance.ExecuteBlock(block);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
+    public void ReceiveControllerReadySignal()
+    {
+        controllerReadyCounter++;
+
+        if(controllerReadyCounter == 6)
+        {
+            controllerReadyCounter = 0;
+            ExecuteStack();
+        }
+    }
+
+    public void ExecuteStack()
+    {
+        //Debug.Log("blockStack count = " + blockStack.Count);
+
+        Stack<Block> executionStack = blockStack;
+        blockStack = new Stack<Block>();
+
+        //Debug.Log("blockStack count = " + blockStack.Count);
+        //Debug.Log("executionStack count = " + executionStack.Count);
+
+        while (executionStack.Count > 0)
+        {
+            Block nextBlock = executionStack.Pop();
+            ExecuteBlock(nextBlock);
+        }
+    }
+
+    private void ExecuteBlock(Block block)
+    {
+        if (block.type.Contains("iq_drivetrain_") || block.type.Contains("iq_motion_"))
+        {
+            DrivetrainController.instance.ExecuteBlock(block);
+        }
+        else if (block.type.Contains("iq_looks_"))
+        {
+            LooksController.instance.ExecuteBlock(block);
+        }
+        else if (block.type.Contains("iq_sounds_"))
+        {
+            SoundController.instance.ExecuteBlock(block);
+        }
+        else if (block.type.Contains("iq_events_"))
+        {
+            EventsController.instance.ExecuteBlock(block);
+        }
+        else if (block.type.Contains("iq_control_"))
+        {
+            ControlController.instance.ExecuteBlock(block);
+        }
+        else if (block.type.Contains("iq_sensing_"))
+        {
+            SensingController.instance.ExecuteBlock(block);
+        }
+    }
+
+    //Builds all the blocks. Blocks form a linked list with topBlock at the head
     private void BuildBlocksFromFile(string filename)
     {
         blockFile = LoadIQBlockFile(filename);
@@ -39,7 +104,7 @@ public class BlockParser : Singleton<BlockParser>
 
         XmlNode root = fileXML.FirstChild;
         XmlNode variables = null;
-        XmlNode topBlockElement = null;
+        List<XmlNode> topBlockElements = new List<XmlNode>();
 
         if (root.HasChildNodes)
         {
@@ -53,7 +118,7 @@ public class BlockParser : Singleton<BlockParser>
                 {
                     case "block":
                         //Debug.Log(logPrefix + " Found Top Level Block!");
-                        topBlockElement = child;
+                        topBlockElements.Add(child);
                         break;
                     case "variables":
                         //Debug.Log(logPrefix + " Found Variables");
@@ -68,28 +133,35 @@ public class BlockParser : Singleton<BlockParser>
             //Store variables
             StoreGlobalVariables(variables);
 
-            //Build blocks from the block elements recursively
-            topBlock = BuildBlock(topBlockElement);
+            //Build blocks from the top block elements
+            foreach(XmlNode topBlockElement in topBlockElements)
+            {
+                topBlocks.Add(BuildBlock(topBlockElement));
+            }            
         }
 
-        bool traverseBlocks = true;
-        Block currentBlock = topBlock;
-
-        Debug.Log(logPrefix + " Traverse Blocks:");
-
-        while (traverseBlocks)
+        //Print out block stacks
+        foreach(Block topBlock in topBlocks)
         {
-            Debug.Log(logPrefix + currentBlock.type);
+            bool traverseBlocks = true;
+            Block currentBlock = topBlock;
 
-            if (currentBlock.nextBlock != null)
+            Debug.Log(logPrefix + " Traverse Blocks:");
+
+            while (traverseBlocks)
             {
-                currentBlock = currentBlock.nextBlock;
+                Debug.Log(logPrefix + currentBlock.type);
+
+                if (currentBlock.nextBlock != null)
+                {
+                    currentBlock = currentBlock.nextBlock;
+                }
+                else
+                {
+                    traverseBlocks = false;
+                }
             }
-            else
-            {
-                traverseBlocks = false;
-            }
-        }
+        }        
     }
 
 
