@@ -18,18 +18,24 @@ public class BlockParser : Singleton<BlockParser>
     Dictionary<string, bool> boolVariables = new Dictionary<string, bool>();
     Dictionary<string, int> intVariables = new Dictionary<string, int>();
     Dictionary<string, int[]> intArrayVariables = new Dictionary<string, int[]>();
-    Dictionary<string, int[,]> int2dArrayVariables = new Dictionary<string, int[,]>();
+    Dictionary<string, int[,]> int2dArrayVariables = new Dictionary<string, int[,]>();    
 
     int controllerReadyCounter = 0;
 
+    public GameObject bot;
+    public Rigidbody botRigidBody; 
+
     void Awake()
     {
-        BuildBlocksFromFile("Assets/Resources/read.iqblocks");
+        BuildBlocksFromFile("Assets/Resources/waitTime.iqblocks");
 
         foreach(Block block in topBlocks) //Top blocks are always event blocks
         {
             EventsController.instance.ExecuteBlock(block);
         }
+
+        bot = GameObject.FindGameObjectWithTag("Bot");
+        botRigidBody = bot.GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame

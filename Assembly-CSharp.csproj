@@ -79,6 +79,7 @@
     <Compile Include="Assets\Scripts\IQBlockFile.cs" />
     <Compile Include="Assets\Scripts\LooksController.cs" />
     <Compile Include="Assets\Scripts\SensingController.cs" />
+    <Compile Include="Assets\Scripts\SimpleCarController.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\SoundController.cs" />
     <None Include="Assets\SampleScenes\Shaders\Skybox-Procedural.shader" />
