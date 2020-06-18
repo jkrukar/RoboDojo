@@ -56,19 +56,15 @@ public class ControlController : Singleton<ControlController>
 
     private IEnumerator WaitForSeconds(Block block)
     {
-        float elapsedTime = 0.0f;
         float waitTime = float.Parse(block.values[0].shadow.field.value);
 
         Debug.Log("Start waiting for " + waitTime + " seconds");
 
-        while(elapsedTime < waitTime)
-        {
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
+        yield return new WaitForSeconds(waitTime);
 
         block.finished = true;
         Debug.Log("Done waiting!");
+
         yield return null;
     }
 }

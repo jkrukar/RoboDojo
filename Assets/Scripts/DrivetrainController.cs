@@ -8,11 +8,14 @@ public class DrivetrainController : Singleton<DrivetrainController>
     private Block activeBlock = null;
     Rigidbody botRigidBody;
     public float botDriveVeloctiy = 0.5f; //The current drive velocity expressed as a percentage of the max velocity 1.0
-    public bool driveForward = false;
+    public float botTurnVeloctiy = 0.5f; //The current turn velocity expressed as a percentage of the max velocity 1.0
+    public bool driving = false;
     public bool turning = false;
-    public int directionPolarity = 1;
-    private float maxDriveVelocity = 2.5f; //Max velocity at 100% is 500mm/sec or 0.5m/s
-    private float maxTurnVelocity = Mathf.PI;  //Max angular velocity at 100% is 180'/s or pi rad/s
+    public int drivePolarity = 1;
+    public int turnPolarity = 1;
+    private float maxDriveVelocity = 3.0f; //Max velocity at 100% is 500mm/sec or 0.5m/s
+    //private float maxTurnVelocity = 180.0f;  //Max angular velocity at 100% is 180'/s or pi rad/s
+    private float maxTurnVelocity = 7.15f;  //Max angular velocity at 100% is 180'/s or pi rad/s
 
     // Start is called before the first frame update
     void Start()
@@ -40,23 +43,30 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
         BlockParser.instance.ReceiveControllerReadySignal();
 
-        
+
     }
 
     private void FixedUpdate()
     {
 
-        if (driveForward)
-        {          
-            if (!botRigidBody.velocity.normalized.Equals(Vector3.zero))
-            {
-                botRigidBody.velocity = (maxDriveVelocity * botDriveVeloctiy) * botRigidBody.velocity.normalized;
-            }
-            else
-            {
-                botRigidBody.velocity = (maxDriveVelocity * botDriveVeloctiy) * Vector3.one;
-            }
+        if (driving)
+        {
+            botRigidBody.velocity = (maxDriveVelocity * botDriveVeloctiy) * botRigidBody.transform.forward * drivePolarity;
         }
+
+        if (turning)
+        {
+            //Quaternion deltaRotation = Quaternion.Euler((maxTurnVelocity * Vector3.up) * Time.deltaTime);
+            //botRigidBody.MoveRotation(botRigidBody.rotation * deltaRotation);
+
+            botRigidBody.angularVelocity = (maxTurnVelocity * botTurnVeloctiy) * botRigidBody.transform.up * turnPolarity;
+            Debug.Log("angularVelocity = " + botRigidBody.angularVelocity);
+
+
+
+            //botRigidBody.transform.rotation = botRigidBody.transform.rotation * Quaternion.AngleAxis((maxTurnVelocity * botTurnVeloctiy) * Time.deltaTime, Vector3.up);
+        }
+
     }
 
     public void ExecuteBlock(Block block)
@@ -67,11 +77,12 @@ public class DrivetrainController : Singleton<DrivetrainController>
         switch (block.type)
         {
             case "iq_drivetrain_drive":
-                DriveForward(block);
+                Drive(block);
                 break;
             case "iq_drivetrain_drive_for":
                 break;
             case "iq_drivetrain_turn":
+                Turn(block);
                 break;
             case "iq_motion_stop_driving":
                 StopDriving(block);
@@ -80,6 +91,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
                 SetDriveVelocity(block);
                 break;
             case "iq_drivetrain_set_turn_velocity":
+                SetTurnVelocity(block);
                 break;
             case "iq_drivetrain_set_drive_stopping": //TODO: This is not fully implemented in VEX VR and I don't fully understand how to use it.
                 StopDriving(block);
@@ -92,10 +104,30 @@ public class DrivetrainController : Singleton<DrivetrainController>
         
     }
 
+    private void SetTurnVelocity(Block block)
+    {
+        float newVelocity = float.Parse(block.values[0].shadow.field.value);
+        newVelocity /= 100;
+
+        Debug.Log(logPrefix + "Set Turn Velocity to " + newVelocity);
+
+        botTurnVeloctiy = newVelocity;
+        block.finished = true;
+    }
+
+    private void Turn(Block block)
+    {
+        Debug.Log(logPrefix + "Turn");
+        turning = true;
+        block.finished = true;
+    }
+
     private void StopDriving()
     {
-        driveForward = false;
+        driving = false;
+        turning = false;
         botRigidBody.velocity = Vector3.zero;
+        botRigidBody.angularVelocity = Vector3.zero;
     }
 
     private void StopDriving(Block block)
@@ -104,14 +136,14 @@ public class DrivetrainController : Singleton<DrivetrainController>
         block.finished = true;
     }
 
-    private void DriveForward(Block block)
+    private void Drive(Block block)
     {
-        Debug.Log(logPrefix + "Drive forward");
-        driveForward = true;
+        Debug.Log(logPrefix + "Drive");
+        driving = true;
         block.finished = true;
     }
 
-    private IEnumerator DriveForwardFor(Block block)
+    private IEnumerator DriveFor(Block block)
     {
 
         yield return null;

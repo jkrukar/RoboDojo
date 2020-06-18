@@ -353,7 +353,7 @@ WheelCollider:
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
     m_Stiffness: 1
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &186445666
 GameObject:
   m_ObjectHideFlags: 0
@@ -721,9 +721,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   botDriveVeloctiy: 0.5
-  driveForward: 0
+  botTurnVeloctiy: 0.5
+  driving: 0
   turning: 0
-  directionPolarity: 1
+  drivePolarity: 1
+  turnPolarity: 1
 --- !u!114 &427717367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -847,7 +849,7 @@ WheelCollider:
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
     m_Stiffness: 1
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &504074293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1585,7 +1587,7 @@ WheelCollider:
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
     m_Stiffness: 1
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &1083991373
 GameObject:
   m_ObjectHideFlags: 0
@@ -1702,6 +1704,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1149279591}
+  - component: {fileID: 1149279592}
   m_Layer: 0
   m_Name: wheels
   m_TagString: Untagged
@@ -1727,6 +1730,19 @@ Transform:
   m_Father: {fileID: 5006512736697551568}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1149279592
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149279590}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1916846, y: 0.06695113, z: 0.14428227}
+  m_Center: {x: -0.0000626981, y: -0.020408677, z: 0.017729254}
 --- !u!1 &1277902633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1998,7 +2014,7 @@ WheelCollider:
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
     m_Stiffness: 1
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &1482630822
 GameObject:
   m_ObjectHideFlags: 0
@@ -10449,7 +10465,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8296172667837708483}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.99, y: 0.231, z: -4.42}
+  m_LocalPosition: {x: -3.5, y: 0.231, z: -3.602}
   m_LocalScale: {x: 3.8825, y: 3.8825, z: 3.8825}
   m_Children:
   - {fileID: 1547207929}
@@ -16257,6 +16273,7 @@ GameObject:
   - component: {fileID: 5006512736697551568}
   - component: {fileID: 8296172667837708484}
   - component: {fileID: 8296172667837708485}
+  - component: {fileID: 8296172667837708486}
   m_Layer: 0
   m_Name: VexIqBot6
   m_TagString: Bot
@@ -16272,9 +16289,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8296172667837708483}
   serializedVersion: 2
-  m_Mass: 500
+  m_Mass: 50
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -16287,7 +16304,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8296172667837708483}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b2b03e117bb9604aa10822773144fa3, type: 3}
   m_Name: 
@@ -16303,6 +16320,19 @@ MonoBehaviour:
     steering: 1
   maxMotorTorque: 20
   maxSteeringAngle: 30
+--- !u!65 &8296172667837708486
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8296172667837708483}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 0.1898289, y: 0.1103581, z: 0.2203067}
+  m_Center: {x: -0.0001225407, y: 0.0029779677, z: 0.02256539}
 --- !u!33 &8311298966877148883
 MeshFilter:
   m_ObjectHideFlags: 0
