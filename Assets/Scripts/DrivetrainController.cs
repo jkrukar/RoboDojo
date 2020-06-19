@@ -80,9 +80,13 @@ public class DrivetrainController : Singleton<DrivetrainController>
                 Drive(block);
                 break;
             case "iq_drivetrain_drive_for":
+                StartCoroutine(DriveFor(block));
                 break;
             case "iq_drivetrain_turn":
                 Turn(block);
+                break;
+            case "iq_drivetrain_turn_for":
+                StartCoroutine(TurnFor(block));
                 break;
             case "iq_motion_stop_driving":
                 StopDriving(block);
@@ -104,6 +108,75 @@ public class DrivetrainController : Singleton<DrivetrainController>
         
     }
 
+    private IEnumerator TurnFor(Block block)
+    {
+        Vector3 originalRotation = botRigidBody.transform.rotation.eulerAngles;
+        string polarity = "";
+        bool andDontWait = false;
+        float amount = 0f;
+
+        foreach (BlockField field in block.fields)
+        {
+            switch (field.name)
+            {
+                case "TURNDIRECTION":
+                    polarity = field.value;
+                    break;
+                case "anddontwait_mutator":
+                    andDontWait = bool.Parse(field.value);
+                    break;
+            }
+        }
+
+        amount = float.Parse(block.values[0].shadow.field.value);
+
+        if (polarity == "right")
+        {
+            turnPolarity = 1;
+        }
+        else
+        {
+            turnPolarity = -1;
+        }
+
+        Debug.Log(logPrefix + " Drive (" + polarity + "): for " + amount + "degrees and dontwait=" + andDontWait);
+
+        turning = true;
+        bool doneTurning = false;
+
+        if (andDontWait)
+        {
+            activeBlock.finished = true;
+        }
+
+        while (!doneTurning)
+        {
+            if (!turning) //Handle concurrent block execution for - and dont wait
+            {
+                turning = true;
+            }
+
+            float degreesTurned = Mathf.Abs(originalRotation.y - botRigidBody.transform.rotation.eulerAngles.y); //TODO fix this
+
+            Debug.Log("degreesTurned= " + degreesTurned);
+
+            if (degreesTurned >= amount)
+            {
+                doneTurning = true;
+                StopDriving();
+
+                if (!andDontWait)
+                {
+                    activeBlock.finished = true;
+                }
+            }
+
+            yield return null;
+        }
+
+        yield return null;
+    }
+
     private void SetTurnVelocity(Block block)
     {
         float newVelocity = float.Parse(block.values[0].shadow.field.value);
@@ -118,6 +191,18 @@ public class DrivetrainController : Singleton<DrivetrainController>
     private void Turn(Block block)
     {
         Debug.Log(logPrefix + "Turn");
+
+        string polarity = block.fields[0].value;
+
+        if (polarity == "right")
+        {
+            drivePolarity = 1;
+        }
+        else
+        {
+            drivePolarity = -1;
+        }
+
         turning = true;
         block.finished = true;
     }
@@ -139,12 +224,95 @@ public class DrivetrainController : Singleton<DrivetrainController>
     private void Drive(Block block)
     {
         Debug.Log(logPrefix + "Drive");
+
+        string polarity = block.fields[0].value;
+
+        if(polarity == "fwd")
+        {
+            drivePolarity = 1;
+        }
+        else
+        {
+            drivePolarity = -1;
+        }
+
         driving = true;
         block.finished = true;
     }
 
     private IEnumerator DriveFor(Block block)
     {
+        Vector3 originalPosition = botRigidBody.transform.position;
+        string polarity = "";
+        string units = "";
+        bool andDontWait = false;
+        float amount = 0f;
+
+        foreach(BlockField field in block.fields)
+        {
+            switch (field.name)
+            {
+                case "DIRECTION":
+                    polarity = field.value;
+                    break;
+                case "UNITS":
+                    units = field.value;
+                    break;
+                case "anddontwait_mutator":
+                    andDontWait = bool.Parse(field.value);
+                    break;
+            }
+        }
+
+        amount = float.Parse(block.values[0].shadow.field.value)*0.005f;
+
+        if (units == "in")
+        {
+            amount *= 25.4f; //Convert inches to mm
+        }
+
+        if (polarity == "fwd")
+        {
+            drivePolarity = 1;
+        }
+        else
+        {
+            drivePolarity = -1;
+        }
+
+        Debug.Log(logPrefix + " Drive (" + polarity + "): for " + amount + " " + units + " and dontwait=" + andDontWait);
+
+        driving = true;
+        bool doneDriving = false;
+
+        if (andDontWait)
+        {
+            activeBlock.finished = true;
+        }
+
+        while (!doneDriving)
+        {
+            if (!driving) //Handle concurrent block execution for - and dont wait
+            {
+                driving = true;
+            }
+
+            float distanceDriven = Vector3.Distance(originalPosition, botRigidBody.transform.position);
+            //Debug.Log("distanceDriven= " + distanceDriven);
+
+            if (distanceDriven >= amount)
+            {
+                doneDriving = true;
+                StopDriving();
+
+                if (!andDontWait)
+                {
+                    activeBlock.finished = true;
+                }           
+            }
+
+            yield return null;
+        }
 
         yield return null;
     }
