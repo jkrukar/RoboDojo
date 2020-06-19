@@ -15,10 +15,10 @@ public class BlockParser : Singleton<BlockParser>
     public Stack<Block> blockStack = new Stack<Block>();
 
     //Variable maps
-    Dictionary<string, bool> boolVariables = new Dictionary<string, bool>();
-    Dictionary<string, int> intVariables = new Dictionary<string, int>();
-    Dictionary<string, int[]> intArrayVariables = new Dictionary<string, int[]>();
-    Dictionary<string, int[,]> int2dArrayVariables = new Dictionary<string, int[,]>();    
+    public Dictionary<string, bool> boolVariables = new Dictionary<string, bool>();
+    public Dictionary<string, float> floatVariables = new Dictionary<string, float>();
+    public Dictionary<string, float[]> floatArrayVariables = new Dictionary<string, float[]>();
+    public Dictionary<string, float[,]> float2dArrayVariables = new Dictionary<string, float[,]>();
 
     int controllerReadyCounter = 0;
 
@@ -48,7 +48,7 @@ public class BlockParser : Singleton<BlockParser>
     {
         controllerReadyCounter++;
 
-        if(controllerReadyCounter == 6)
+        if(controllerReadyCounter == 7)
         {
             controllerReadyCounter = 0;
             ExecuteStack();
@@ -74,7 +74,11 @@ public class BlockParser : Singleton<BlockParser>
 
     private void ExecuteBlock(Block block)
     {
-        if (block.type.Contains("iq_drivetrain_") || block.type.Contains("iq_motion_"))
+        if (block.type.Contains("iq_variables_"))
+        {
+            VariablesController.instance.ExecuteBlock(block);
+        }
+        else if (block.type.Contains("iq_drivetrain_") || block.type.Contains("iq_motion_"))
         {
             DrivetrainController.instance.ExecuteBlock(block);
         }
@@ -195,7 +199,7 @@ public class BlockParser : Singleton<BlockParser>
             {
                 case "":
                     //Debug.Log(logPrefix + " stored int var");
-                    intVariables.Add(variableName, 0);
+                    floatVariables.Add(variableName, 0);
                     break;
                 case "boolean":
                     boolVariables.Add(variableName, false);
@@ -203,13 +207,13 @@ public class BlockParser : Singleton<BlockParser>
                     break;
                 case "list":
                     //Debug.Log(logPrefix + " stored list var of length " + length);
-                    int[] newArray = new int[length];
-                    intArrayVariables.Add(variableName, newArray);
+                    float[] newArray = new float[length];
+                    floatArrayVariables.Add(variableName, newArray);
                     break;
                 case "array2d":                    
                     //Debug.Log(logPrefix + " stored 2D list var of size " + length + "x" + width);
-                    int[,] new2dArray = new int[length,width];
-                    int2dArrayVariables.Add(variableName, new2dArray);
+                    float[,] new2dArray = new float[length,width];
+                    float2dArrayVariables.Add(variableName, new2dArray);
                     break;
             }
         }
@@ -249,6 +253,7 @@ public class BlockParser : Singleton<BlockParser>
 
         XmlAttributeCollection attributes = node.Attributes;
         XmlNodeList fields = node.SelectNodes("child::d:field", nsManager);
+        XmlNodeList values = node.SelectNodes("child::d:value", nsManager);
 
         if (attributes["type"] != null)
             newShadow.type = attributes["type"].InnerText;
@@ -262,6 +267,15 @@ public class BlockParser : Singleton<BlockParser>
         {
             BlockField newField = BuildBlockField(fields.Item(0));
             newShadow.field = newField;
+        }
+
+        if(values != null && values.Count > 0)
+        {
+            foreach (XmlNode nextValueElement in values)
+            {
+                BlockValue newValue = BuildBlockValue(nextValueElement);
+                newShadow.values.Add(newValue);
+            }
         }
 
         Debug.Log(logPrefix + "New Shadow: " + newShadow.type);

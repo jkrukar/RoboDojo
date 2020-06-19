@@ -110,7 +110,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
     private IEnumerator TurnFor(Block block)
     {
-        Vector3 originalRotation = botRigidBody.transform.rotation.eulerAngles;
+        Vector3 originalRotation = botRigidBody.transform.forward;
         string polarity = "";
         bool andDontWait = false;
         float amount = 0f;
@@ -156,8 +156,10 @@ public class DrivetrainController : Singleton<DrivetrainController>
                 turning = true;
             }
 
-            float degreesTurned = Mathf.Abs(originalRotation.y - botRigidBody.transform.rotation.eulerAngles.y); //TODO fix this
+            float degreesTurned = Vector3.Angle(originalRotation, botRigidBody.transform.forward);
 
+            Debug.Log("degreesTurned= " + originalRotation);
+            Debug.Log("degreesTurned= " + botRigidBody.transform.forward);
             Debug.Log("degreesTurned= " + degreesTurned);
 
             if (degreesTurned >= amount)

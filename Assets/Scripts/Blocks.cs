@@ -41,6 +41,7 @@ public class BlockShadow
 {
     public string type;
     public BlockField field;
+    public List<BlockValue> values = new List<BlockValue>();
 }
 
 public class BlockStack
