@@ -51,7 +51,7 @@ public class EventsController : Singleton<EventsController>
             case "iq_events_broadcast_and_wait":
                 break;
             case "iq_events_when_timer":
-                float triggerTime = float.Parse(block.values[0].shadow.field.value);
+                float triggerTime = BlockParser.instance.ResolveBlockValue(block.values[0]);
                 whenTimerStacks.Add(triggerTime,new BlockStack(block, null));
                 break;
             case "iq_events_when_started":

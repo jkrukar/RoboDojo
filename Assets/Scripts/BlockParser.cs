@@ -104,6 +104,33 @@ public class BlockParser : Singleton<BlockParser>
         }
     }
 
+    public float ResolveBlockValue(BlockValue value)
+    {
+        float resolvedValue = 0f;
+
+        if(value.block != null)
+        {
+            if(value.block.type.Contains("iq_variables_variable"))
+            {
+                resolvedValue = VariablesController.instance.GetFloat(value.block);
+            }
+            else if (value.block.type.Contains("iq_variables_item_of_array"))
+            {
+                resolvedValue = VariablesController.instance.GetArrayItem(value.block);
+            }
+            else if (value.block.type.Contains("iq_variables_item_of_2d_array"))
+            {
+                resolvedValue = VariablesController.instance.Get2DArrayItem(value.block);
+            }
+        }
+        else
+        {
+            resolvedValue = float.Parse(value.shadow.field.value);
+        }
+
+        return resolvedValue;
+    }
+
     //Builds all the blocks. Blocks form a linked list with topBlock at the head
     private void BuildBlocksFromFile(string filename)
     {

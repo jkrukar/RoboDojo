@@ -87,8 +87,8 @@ public class VariablesController : Singleton<VariablesController>
     public float Get2DArrayItem(Block block)
     {
         string name = block.fields[0].value;
-        int row = int.Parse(block.values[0].shadow.field.value);
-        int col = int.Parse(block.values[1].shadow.field.value);
+        int row = (int) BlockParser.instance.ResolveBlockValue(block.values[0]);
+        int col = (int) BlockParser.instance.ResolveBlockValue(block.values[1]);
 
         Debug.Log(logPrefix + "item at " + row + "," + col + "of list " + name + " = " + BlockParser.instance.float2dArrayVariables[name][row, col]);
 
@@ -118,9 +118,9 @@ public class VariablesController : Singleton<VariablesController>
     private void SetItemOf2DArray(Block block)
     {
         string name = block.fields[0].value;
-        int row = int.Parse(block.values[0].shadow.field.value);
-        int col = int.Parse(block.values[1].shadow.field.value);
-        float val = float.Parse(block.values[2].shadow.field.value);
+        int row = (int) BlockParser.instance.ResolveBlockValue(block.values[0]);
+        int col = (int) BlockParser.instance.ResolveBlockValue(block.values[1]);
+        float val = BlockParser.instance.ResolveBlockValue(block.values[2]);
 
         BlockParser.instance.float2dArrayVariables[name][row,col] = val;
 
@@ -138,7 +138,7 @@ public class VariablesController : Singleton<VariablesController>
         {
             for (int j=0; j < cols; j++)
             {
-                floats[i,j] = float.Parse(block.values[i].shadow.values[j].shadow.field.value);
+                floats[i,j] = BlockParser.instance.ResolveBlockValue(block.values[i].shadow.values[j]);
                 Debug.Log(logPrefix + "Set " + name + "[" + i + "][" + j + "] = " + floats[i, j]);
             }
         }
@@ -151,7 +151,7 @@ public class VariablesController : Singleton<VariablesController>
     public float GetArrayItem(Block block)
     {
         string name = block.fields[0].value;
-        int index = int.Parse(block.values[0].shadow.field.value);
+        int index = (int) BlockParser.instance.ResolveBlockValue(block.values[0]);
 
         return BlockParser.instance.floatArrayVariables[name][index];
     }
@@ -172,11 +172,11 @@ public class VariablesController : Singleton<VariablesController>
         {
             if(value.shadow.field.value == "INDEX")
             {
-                index = int.Parse(value.shadow.field.value);
+                index = (int) BlockParser.instance.ResolveBlockValue(value);
             }
             else
             {
-                val = float.Parse(value.shadow.field.value);
+                val = BlockParser.instance.ResolveBlockValue(value);
             }
         }
 
@@ -192,7 +192,7 @@ public class VariablesController : Singleton<VariablesController>
 
         for(int i=0; i < block.values.Count; i++)
         {
-            floats[i] = float.Parse(block.values[i].shadow.field.value);
+            floats[i] = BlockParser.instance.ResolveBlockValue(block.values[i]);
             Debug.Log(logPrefix + "Set " + name + "[" + i + "] = " + floats[i]);
         }
 
@@ -218,7 +218,7 @@ public class VariablesController : Singleton<VariablesController>
     private void SetFloat(Block block)
     {
         string name = block.fields[0].value;
-        float value = float.Parse(block.values[0].shadow.field.value);
+        float value = BlockParser.instance.ResolveBlockValue(block.values[0]);
 
         BlockParser.instance.floatVariables[name] = value;
 
@@ -229,7 +229,7 @@ public class VariablesController : Singleton<VariablesController>
     {
         string name = block.fields[0].value;
         float currentVal = BlockParser.instance.floatVariables[name];
-        float amount = float.Parse(block.values[0].shadow.field.value);
+        float amount = BlockParser.instance.ResolveBlockValue(block.values[0]);
 
         BlockParser.instance.floatVariables[name] = currentVal + amount;
 

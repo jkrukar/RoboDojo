@@ -56,7 +56,7 @@ public class ControlController : Singleton<ControlController>
 
     private IEnumerator WaitForSeconds(Block block)
     {
-        float waitTime = float.Parse(block.values[0].shadow.field.value);
+        float waitTime = BlockParser.instance.ResolveBlockValue(block.values[0]);
 
         Debug.Log("Start waiting for " + waitTime + " seconds");
 

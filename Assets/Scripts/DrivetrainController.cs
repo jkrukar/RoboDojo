@@ -128,7 +128,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
             }
         }
 
-        amount = float.Parse(block.values[0].shadow.field.value);
+        amount = BlockParser.instance.ResolveBlockValue(block.values[0]);
 
         if (polarity == "right")
         {
@@ -151,7 +151,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
         while (!doneTurning)
         {
-            if (!turning) //Handle concurrent block execution for - and dont wait
+            if (!turning) //Handle concurrent block execution for - and dont wait TODO: Could be problematic if a distance sensor tries to stop it or something!!!
             {
                 turning = true;
             }
@@ -181,7 +181,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
     private void SetTurnVelocity(Block block)
     {
-        float newVelocity = float.Parse(block.values[0].shadow.field.value);
+        float newVelocity = BlockParser.instance.ResolveBlockValue(block.values[0]);
         newVelocity /= 100;
 
         Debug.Log(logPrefix + "Set Turn Velocity to " + newVelocity);
@@ -266,7 +266,8 @@ public class DrivetrainController : Singleton<DrivetrainController>
             }
         }
 
-        amount = float.Parse(block.values[0].shadow.field.value)*0.005f;
+        amount = BlockParser.instance.ResolveBlockValue(block.values[0]);
+        amount *= 0.005f; //Convert to Unity units
 
         if (units == "in")
         {
@@ -321,7 +322,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
     private void SetDriveVelocity(Block block)
     {
-        float newVelocity = float.Parse(block.values[0].shadow.field.value);
+        float newVelocity = BlockParser.instance.ResolveBlockValue(block.values[0]);
         newVelocity /= 100;
 
         Debug.Log(logPrefix + "Set Drive Velocity to " + newVelocity);
@@ -329,10 +330,4 @@ public class DrivetrainController : Singleton<DrivetrainController>
         botDriveVeloctiy = newVelocity;
         block.finished = true;
     }
-
-
-
-
-
-
 }
