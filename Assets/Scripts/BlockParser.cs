@@ -27,7 +27,7 @@ public class BlockParser : Singleton<BlockParser>
 
     void Awake()
     {
-        BuildBlocksFromFile("Assets/Resources/waitTime.iqblocks");
+        BuildBlocksFromFile("Assets/Resources/read.iqblocks");
 
         foreach(Block block in topBlocks) //Top blocks are always event blocks
         {
@@ -117,7 +117,7 @@ public class BlockParser : Singleton<BlockParser>
             else
             {
                 resolvedState = ResolveBooleanOperator(value.block);
-            }            
+            }
         }
 
         return resolvedState;

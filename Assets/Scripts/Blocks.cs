@@ -34,6 +34,7 @@ public class BlockStatement
 {
     public Block block;
     public string name;
+    public bool finished = false;
 
 }
 

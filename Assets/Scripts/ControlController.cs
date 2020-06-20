@@ -6,6 +6,7 @@ public class ControlController : Singleton<ControlController>
 {
     private string logPrefix = "[Control] ";
     private Block activeBlock = null;
+    private bool gameRunning = true;
 
     // Start is called before the first frame update
     void Start()
@@ -44,22 +45,255 @@ public class ControlController : Singleton<ControlController>
                 StartCoroutine(WaitForSeconds(block));
                 break;
             case "iq_control_repeat":
+                StartCoroutine(RepeatFor(block));
                 break;
             case "iq_control_if_then":
+                StartCoroutine(IfThen(block));
                 break;
             case "iq_control_if_then_else":
+                StartCoroutine(IfThenElse(block));
                 break;
             case "iq_control_wait_until":
+                StartCoroutine(WaitUntil(block));
                 break;
             case "iq_control_repeat_until":
+                StartCoroutine(RepeatUntil(block));
                 break;
             case "iq_control_while":
+                StartCoroutine(While(block));
                 break;
             case "iq_control_forever":
+                StartCoroutine(RepeatForever(block));
                 break;
-            case "iq_control_break":
-                break;
+            //case "iq_control_break":  Handled implicitly in ExecuteStatement, by terminating if a break block is encountered
+            //    break;
         }
+    }
+
+    private IEnumerator IfThenElse(Block block)
+    {
+        bool condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
+
+        BlockStatement ifStatement = block.statements[0];
+        BlockStatement elseStatement = block.statements[1];
+
+        if (condition)
+        {
+            StartCoroutine(ExecuteStatement(ifStatement));
+
+            while (!ifStatement.finished)
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            StartCoroutine(ExecuteStatement(elseStatement));
+
+            while (!elseStatement.finished)
+            {
+                yield return null;
+            }
+        }
+
+        block.finished = true;
+
+        yield return null;
+    }
+
+    private IEnumerator IfThen(Block block)
+    {
+        bool condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
+
+        BlockStatement statement = block.statements[0];
+
+        if(condition)
+        {
+            StartCoroutine(ExecuteStatement(statement));
+
+            while (!statement.finished)
+            {
+                yield return null;
+            }
+        }
+
+        block.finished = true;
+
+        yield return null;
+    }
+
+    private IEnumerator RepeatForever(Block block)
+    {
+        BlockStatement statement = block.statements[0];
+        statement.finished = true; //This will get the statement started, although it's no tehcnically finished
+
+        while (gameRunning)
+        {
+            if (statement.finished)
+            {
+
+                if (gameRunning)
+                {
+                    statement.finished = false; //reset statement
+                    StartCoroutine(ExecuteStatement(statement));
+                }
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+
+        block.finished = true;
+
+        yield return null;
+    }
+
+    private IEnumerator WaitUntil(Block block)
+    {
+        bool condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
+
+        while (!condition)
+        {
+            condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
+            yield return null;
+           
+        }
+
+        block.finished = true;
+
+        yield return null;
+    }
+
+    private IEnumerator While(Block block)
+    {
+        bool condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
+
+        BlockStatement statement = block.statements[0];
+        statement.finished = true; //This will get the statement started, although it's no tehcnically finished
+
+        while (condition)
+        {
+            if (statement.finished)
+            {
+                condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
+
+                if (condition)
+                {
+                    statement.finished = false; //reset statement
+                    StartCoroutine(ExecuteStatement(statement));
+                }
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+
+        block.finished = true;
+
+        yield return null;
+    }
+
+    private IEnumerator RepeatUntil(Block block)
+    {
+        bool condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
+
+        BlockStatement statement = block.statements[0];
+        statement.finished = true; //This will get the statement started, although it's no tehcnically finished
+
+        while (!condition)
+        {
+            if (statement.finished)
+            {
+                condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
+
+                if (!condition)
+                {
+                    statement.finished = false; //reset statement
+                    StartCoroutine(ExecuteStatement(statement));
+                }                
+            }
+            else
+            {
+                yield return null;
+            }            
+        }
+
+        block.finished = true;
+
+        yield return null;
+    }
+
+    private IEnumerator RepeatFor(Block block)
+    {
+        int iterations = (int) BlockParser.instance.ResolveBlockValue(block.values[0]);
+        BlockStatement statement = block.statements[0];
+
+        statement.finished = true; //This will get the statement started, although it's no tehcnically finished
+
+        while (iterations > 0)
+        {
+
+            if (statement.finished)
+            {
+                iterations--;
+                statement.finished = false; //reset statement
+                StartCoroutine(ExecuteStatement(statement));
+            }
+            else
+            {
+                yield return null;
+            }     
+        }
+
+        block.finished = true;
+
+        yield return null;
+    }
+
+    private IEnumerator ExecuteStatement(BlockStatement statement)
+    {
+        Block nextStatementBlock = statement.block;
+
+        //Push first block in statement
+        BlockParser.instance.blockStack.Push(nextStatementBlock);
+
+        while (!statement.finished)
+        {
+
+            if (nextStatementBlock.finished)
+            {
+                nextStatementBlock.finished = false; //Reset the statement block
+
+                //When the block finishes, get the next block in the statement or reset to first block in statement
+                if (nextStatementBlock.nextBlock == null)
+                {
+                    statement.finished = true;
+                    break;
+                }
+                else
+                {
+                    nextStatementBlock = nextStatementBlock.nextBlock;
+
+                    if(nextStatementBlock.type == "iq_control_break") //If the next block is a break, terminate executing the statement immediately
+                    {
+                        statement.finished = true;
+                        break;
+                    }
+                    else
+                    {
+                        BlockParser.instance.blockStack.Push(nextStatementBlock);
+                    }                    
+                }                
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+
+        yield return null;
     }
 
     private IEnumerator WaitForSeconds(Block block)
