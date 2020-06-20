@@ -43,13 +43,21 @@ public class ControlController : Singleton<ControlController>
             case "iq_control_wait":
                 StartCoroutine(WaitForSeconds(block));
                 break;
-            case "iq_events_broadcast_and_wait":
+            case "iq_control_repeat":
                 break;
-            case "iq_events_when_timer":
+            case "iq_control_if_then":
                 break;
-            case "iq_events_when_started":
+            case "iq_control_if_then_else":
                 break;
-            case "iq_events_when_broadcasted":
+            case "iq_control_wait_until":
+                break;
+            case "iq_control_repeat_until":
+                break;
+            case "iq_control_while":
+                break;
+            case "iq_control_forever":
+                break;
+            case "iq_control_break":
                 break;
         }
     }

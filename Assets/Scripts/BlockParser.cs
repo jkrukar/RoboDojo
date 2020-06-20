@@ -104,6 +104,214 @@ public class BlockParser : Singleton<BlockParser>
         }
     }
 
+    public bool ResolveBlockCondition(BlockValue value)
+    {
+        bool resolvedState = false;
+
+        if (value.block != null)
+        {
+            if (value.block.type.Contains("iq_variables_boolean_variable"))
+            {
+                resolvedState = VariablesController.instance.GetBool(value.block);
+            }
+            else
+            {
+                resolvedState = ResolveBooleanOperator(value.block);
+            }            
+        }
+
+        return resolvedState;
+    }
+
+    public bool ResolveBooleanOperator(Block operatorBlock)
+    {
+        bool resolvedState = false;
+        float val1;
+        float val2;
+        bool bool1;
+        bool bool2;
+
+        switch (operatorBlock.type)
+        {
+            case "iq_operator_greater_than":
+                val1 = ResolveBlockValue(operatorBlock.values[0]);
+                val2 = ResolveBlockValue(operatorBlock.values[1]);
+                resolvedState = val1 > val2;
+                Debug.Log(logPrefix + "OP: " + val1 + " > " + val2 + " = " + resolvedState);
+                break;
+            case "iq_operator_less_than":
+                val1 = ResolveBlockValue(operatorBlock.values[0]);
+                val2 = ResolveBlockValue(operatorBlock.values[1]);
+                resolvedState = val1 < val2;
+                Debug.Log(logPrefix + "OP: " + val1 + " < " + val2 + " = " + resolvedState);
+                break;
+            case "iq_operator_equal_to":
+                val1 = ResolveBlockValue(operatorBlock.values[0]);
+                val2 = ResolveBlockValue(operatorBlock.values[1]);
+                resolvedState = val1 == val2;
+                Debug.Log(logPrefix + "OP: " + val1 + " == " + val2 + " = " + resolvedState);
+                break;
+            case "iq_operator_and":
+                bool1 = ResolveBlockBool(operatorBlock.values[0]);
+                bool2 = ResolveBlockBool(operatorBlock.values[1]);
+                resolvedState = bool1 && bool2;
+                Debug.Log(logPrefix + "OP: " + bool1 + " && " + bool2 + " = " + resolvedState);
+                break;
+            case "iq_operator_or":
+                bool1 = ResolveBlockBool(operatorBlock.values[0]);
+                bool2 = ResolveBlockBool(operatorBlock.values[1]);
+                resolvedState = bool1 || bool2;
+                Debug.Log(logPrefix + "OP: " + bool1 + " || " + bool2 + " = " + resolvedState);
+                break;
+            case "iq_operator_not":
+                bool1 = ResolveBlockBool(operatorBlock.values[0]);
+                resolvedState = !bool1;
+                Debug.Log(logPrefix + "OP: !" + bool1 + " = " + resolvedState);
+                break;
+        }
+
+        return resolvedState;
+    }
+
+    public bool ResolveBlockBool(BlockValue value)
+    {
+        bool resolvedState = false;
+
+        if (value.block != null)
+        {
+            if (value.block.type.Contains("iq_variables_boolean_variable"))
+            {
+                resolvedState = VariablesController.instance.GetBool(value.block);
+            }
+            else if (value.block.type.Contains("iq_operator"))
+            {
+                resolvedState = ResolveBooleanOperator(value.block);
+            }
+        }
+
+        return resolvedState;
+    }
+
+    public float ResolveOperatorFunction(Block operatorBlock)
+    {
+        float resolvedValue = 0f;
+
+        string functionName = operatorBlock.fields[0].value;
+        float inputVal = ResolveBlockValue(operatorBlock.values[0]);
+
+        switch (functionName)
+        {
+            case "abs":
+                resolvedValue = Mathf.Abs(inputVal);
+                Debug.Log(logPrefix + "OP abs: " + inputVal + " = " + resolvedValue);
+                break;
+            case "floor":
+                resolvedValue = Mathf.Floor(inputVal);
+                Debug.Log(logPrefix + "OP floor: " + inputVal + " = " + resolvedValue);
+                break;
+            case "ceiling":
+                resolvedValue = Mathf.Ceil(inputVal);
+                Debug.Log(logPrefix + "OP ceil: " + inputVal + " = " + resolvedValue);
+                break;
+            case "sqrt":
+                resolvedValue = Mathf.Sqrt(inputVal);
+                Debug.Log(logPrefix + "OP sqrt: " + inputVal + " = " + resolvedValue);
+                break;
+            case "sin":
+                resolvedValue = Mathf.Sin(inputVal);
+                Debug.Log(logPrefix + "OP sin: " + inputVal + " = " + resolvedValue);
+                break;
+            case "cos":
+                resolvedValue = Mathf.Cos(inputVal);
+                Debug.Log(logPrefix + "OP cos: " + inputVal + " = " + resolvedValue);
+                break;
+            case "tan":
+                resolvedValue = Mathf.Tan(inputVal);
+                Debug.Log(logPrefix + "OP tan: " + inputVal + " = " + resolvedValue);
+                break;
+            case "asin":
+                resolvedValue = Mathf.Asin(inputVal);
+                Debug.Log(logPrefix + "OP asin: " + inputVal + " = " + resolvedValue);
+                break;
+            case "acos":
+                resolvedValue = Mathf.Acos(inputVal);
+                Debug.Log(logPrefix + "OP acos: " + inputVal + " = " + resolvedValue);
+                break;
+            case "atan":
+                resolvedValue = Mathf.Atan(inputVal);
+                Debug.Log(logPrefix + "OP atan: " + inputVal + " = " + resolvedValue);
+                break;
+            case "ln":
+                resolvedValue = Mathf.Log(inputVal);
+                Debug.Log(logPrefix + "OP ln: " + inputVal + " = " + resolvedValue);
+                break;
+            case "log":
+                resolvedValue = Mathf.Log(inputVal,10);
+                Debug.Log(logPrefix + "OP log: " + inputVal + " = " + resolvedValue);
+                break;
+            case "e ^":
+                resolvedValue = Mathf.Exp(inputVal);
+                Debug.Log(logPrefix + "OP e^: " + inputVal + " = " + resolvedValue);
+                break;
+            case "10 ^":
+                resolvedValue = Mathf.Pow(10,inputVal);
+                Debug.Log(logPrefix + "OP 10^: " + inputVal + " = " + resolvedValue);
+                break;
+        }
+
+        return resolvedValue;
+    }
+
+    public float ResolveNumericOperator(Block operatorBlock)
+    {
+        float resolvedValue = 0f;
+        float val1 = ResolveBlockValue(operatorBlock.values[0]);
+        float val2 = 0f;
+
+        if(operatorBlock.values.Count > 1)
+        {
+            val2 = ResolveBlockValue(operatorBlock.values[1]);
+        }
+
+        switch (operatorBlock.type)
+        {
+            case "iq_operator_add":                
+                resolvedValue = val1 + val2;
+                Debug.Log(logPrefix + "OP: " + val1 + " + " + val2 + " = " + resolvedValue);
+                break;
+            case "iq_operator_subtract":
+                resolvedValue = val1 - val2;
+                Debug.Log(logPrefix + "OP: " + val1 + " - " + val2 + " = " + resolvedValue);
+                break;
+            case "iq_operator_multiply":
+                resolvedValue = val1 * val2;
+                Debug.Log(logPrefix + "OP: " + val1 + " * " + val2 + " = " + resolvedValue);
+                break;
+            case "iq_operator_divide":
+                resolvedValue = val1 / val2;
+                Debug.Log(logPrefix + "OP: " + val1 + " / " + val2 + " = " + resolvedValue);
+                break;
+            case "iq_operator_random":
+                resolvedValue = Random.Range(val1, val2);
+                Debug.Log(logPrefix + "OP: random from range:" + val1 + " - " + val2 + " = " + resolvedValue);
+                break;
+            case "iq_operator_round":
+                resolvedValue = Mathf.Round(val1);
+                Debug.Log(logPrefix + "OP: round(" + val1 + ") = " + resolvedValue);
+                break;
+            case "iq_operator_remainder":
+                resolvedValue = val1 % val2;
+                Debug.Log(logPrefix + "OP: " + val1 + " % " + val2 + " = " + resolvedValue);
+                break;
+            case "iq_operator_function":
+                resolvedValue = ResolveOperatorFunction(operatorBlock);
+                Debug.Log(logPrefix + "OP: function resolved to " + resolvedValue);
+                break;
+        }
+
+        return resolvedValue;
+    }
+
     public float ResolveBlockValue(BlockValue value)
     {
         float resolvedValue = 0f;
@@ -121,6 +329,10 @@ public class BlockParser : Singleton<BlockParser>
             else if (value.block.type.Contains("iq_variables_item_of_2d_array"))
             {
                 resolvedValue = VariablesController.instance.Get2DArrayItem(value.block);
+            }
+            else if (value.block.type.Contains("iq_operator"))
+            {
+                resolvedValue = ResolveNumericOperator(value.block);
             }
         }
         else

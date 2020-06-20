@@ -97,6 +97,12 @@ public class DrivetrainController : Singleton<DrivetrainController>
             case "iq_drivetrain_set_turn_velocity":
                 SetTurnVelocity(block);
                 break;
+            case "iq_drivetrain_turn_to_heading": //TODO: not implemented
+                block.finished = true;
+                break;
+            case "iq_drivetrain_turn_to_rotation": //TODO: not implemented
+                block.finished = true;
+                break;
             case "iq_drivetrain_set_drive_stopping": //TODO: This is not fully implemented in VEX VR and I don't fully understand how to use it.
                 StopDriving(block);
                 break;
