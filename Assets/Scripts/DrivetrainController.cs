@@ -60,7 +60,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
             //botRigidBody.MoveRotation(botRigidBody.rotation * deltaRotation);
 
             botRigidBody.angularVelocity = (maxTurnVelocity * botTurnVeloctiy) * botRigidBody.transform.up * turnPolarity;
-            Debug.Log("angularVelocity = " + botRigidBody.angularVelocity);
+            //Debug.Log("angularVelocity = " + botRigidBody.angularVelocity);
 
 
 
@@ -164,9 +164,9 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
             float degreesTurned = Vector3.Angle(originalRotation, botRigidBody.transform.forward);
 
-            Debug.Log("degreesTurned= " + originalRotation);
-            Debug.Log("degreesTurned= " + botRigidBody.transform.forward);
-            Debug.Log("degreesTurned= " + degreesTurned);
+            //Debug.Log("degreesTurned= " + originalRotation);
+            //Debug.Log("degreesTurned= " + botRigidBody.transform.forward);
+            //Debug.Log("degreesTurned= " + degreesTurned);
 
             if (degreesTurned >= amount)
             {

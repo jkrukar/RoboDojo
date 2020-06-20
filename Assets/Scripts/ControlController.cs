@@ -96,6 +96,7 @@ public class ControlController : Singleton<ControlController>
             }
         }
 
+        activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
 
         yield return null;
@@ -117,6 +118,7 @@ public class ControlController : Singleton<ControlController>
             }
         }
 
+        activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
 
         yield return null;
@@ -144,6 +146,7 @@ public class ControlController : Singleton<ControlController>
             }
         }
 
+        activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
 
         yield return null;
@@ -160,6 +163,7 @@ public class ControlController : Singleton<ControlController>
            
         }
 
+        activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
 
         yield return null;
@@ -170,7 +174,7 @@ public class ControlController : Singleton<ControlController>
         bool condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
 
         BlockStatement statement = block.statements[0];
-        statement.finished = true; //This will get the statement started, although it's no tehcnically finished
+        statement.finished = true; //This will get the statement started, although it's no technically finished
 
         while (condition)
         {
@@ -190,6 +194,7 @@ public class ControlController : Singleton<ControlController>
             }
         }
 
+        activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
 
         yield return null;
@@ -200,7 +205,7 @@ public class ControlController : Singleton<ControlController>
         bool condition = BlockParser.instance.ResolveBlockCondition(block.values[0]);
 
         BlockStatement statement = block.statements[0];
-        statement.finished = true; //This will get the statement started, although it's no tehcnically finished
+        statement.finished = true; //This will get the statement started, although it's no technically finished
 
         while (!condition)
         {
@@ -220,6 +225,7 @@ public class ControlController : Singleton<ControlController>
             }            
         }
 
+        activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
 
         yield return null;
@@ -230,23 +236,16 @@ public class ControlController : Singleton<ControlController>
         int iterations = (int) BlockParser.instance.ResolveBlockValue(block.values[0]);
         BlockStatement statement = block.statements[0];
 
-        statement.finished = true; //This will get the statement started, although it's no tehcnically finished
+        statement.finished = true; //This will get the statement started, although it's no technically finished
 
         while (iterations > 0)
         {
-
-            if (statement.finished)
-            {
-                iterations--;
-                statement.finished = false; //reset statement
-                StartCoroutine(ExecuteStatement(statement));
-            }
-            else
-            {
-                yield return null;
-            }     
+            iterations--;
+            statement.finished = false; //reset statement
+            yield return StartCoroutine(ExecuteStatement(statement));
         }
-
+        
+        activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
 
         yield return null;
@@ -270,7 +269,6 @@ public class ControlController : Singleton<ControlController>
                 if (nextStatementBlock.nextBlock == null)
                 {
                     statement.finished = true;
-                    break;
                 }
                 else
                 {
@@ -279,7 +277,6 @@ public class ControlController : Singleton<ControlController>
                     if(nextStatementBlock.type == "iq_control_break") //If the next block is a break, terminate executing the statement immediately
                     {
                         statement.finished = true;
-                        break;
                     }
                     else
                     {
