@@ -27,7 +27,7 @@ public class BlockParser : Singleton<BlockParser>
 
     void Awake()
     {
-        BuildBlocksFromFile("Assets/Resources/read.iqblocks");
+        BuildBlocksFromFile("Assets/Resources/read2.iqblocks");
 
         foreach(Block block in topBlocks) //Top blocks are always event blocks
         {

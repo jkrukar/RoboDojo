@@ -202,7 +202,7 @@ public class VariablesController : Singleton<VariablesController>
     private void SetBool(Block block)
     {
         string name = block.fields[0].value;
-        bool value = bool.Parse(block.values[0].shadow.field.value);
+        bool value = BlockParser.instance.ResolveBlockBool(block.values[0]);
 
         BlockParser.instance.boolVariables[name] = value;
 
