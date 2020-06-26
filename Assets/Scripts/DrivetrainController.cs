@@ -27,7 +27,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
     void Update()
     {
 
-        if (activeBlock != null)
+        if (activeBlock != null && !activeBlock.statementBlock)
         {
             if (activeBlock.finished)
             {
@@ -35,7 +35,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
                 {
                     //Debug.Log("Push block: " + activeBlock.nextBlock.type);
                     BlockParser.instance.blockStack.Push(activeBlock.nextBlock);
-                }                
+                }
                 
                 activeBlock = null;
             }
@@ -145,14 +145,15 @@ public class DrivetrainController : Singleton<DrivetrainController>
             turnPolarity = -1;
         }
 
-        Debug.Log(logPrefix + " Drive (" + polarity + "): for " + amount + "degrees and dontwait=" + andDontWait);
+        Debug.Log(logPrefix + " Drive (" + polarity + "): for " + amount + " degrees and dontwait=" + andDontWait);
 
         turning = true;
         bool doneTurning = false;
 
         if (andDontWait)
         {
-            activeBlock.finished = true;
+            Debug.Log("Done Turning!");
+            block.finished = true;
         }
 
         while (!doneTurning)
@@ -175,7 +176,8 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
                 if (!andDontWait)
                 {
-                    activeBlock.finished = true;
+                    Debug.Log("Done Turning!");
+                    block.finished = true;
                 }
             }
 
@@ -296,7 +298,8 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
         if (andDontWait)
         {
-            activeBlock.finished = true;
+            Debug.Log("Done Driving!");
+            block.finished = true;
         }
 
         while (!doneDriving)
@@ -316,8 +319,9 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
                 if (!andDontWait)
                 {
-                    activeBlock.finished = true;
-                }           
+                    Debug.Log("Done Driving!");
+                    block.finished = true;
+                }         
             }
 
             yield return null;

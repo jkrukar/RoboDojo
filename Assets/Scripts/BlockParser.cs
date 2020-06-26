@@ -68,6 +68,7 @@ public class BlockParser : Singleton<BlockParser>
         while (executionStack.Count > 0)
         {
             Block nextBlock = executionStack.Pop();
+            Debug.Log("next block in stack = " + nextBlock.type);
             ExecuteBlock(nextBlock);
         }
     }

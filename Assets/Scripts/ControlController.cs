@@ -19,7 +19,7 @@ public class ControlController : Singleton<ControlController>
     {
         if (activeBlock != null)
         {
-            if (activeBlock.finished)
+            if (activeBlock.finished && !activeBlock.statementBlock)
             {
                 if (activeBlock.nextBlock != null)
                 {
@@ -217,7 +217,7 @@ public class ControlController : Singleton<ControlController>
                 {
                     statement.finished = false; //reset statement
                     StartCoroutine(ExecuteStatement(statement));
-                }                
+                }
             }
             else
             {
@@ -254,9 +254,22 @@ public class ControlController : Singleton<ControlController>
     private IEnumerator ExecuteStatement(BlockStatement statement)
     {
         Block nextStatementBlock = statement.block;
+        Block finalStatementBlock = nextStatementBlock;
+
+        while(finalStatementBlock.nextBlock != null)
+        {
+            finalStatementBlock.statementBlock = true;
+            finalStatementBlock = finalStatementBlock.nextBlock;
+        }
+
+        Debug.Log("final statement block = " + finalStatementBlock.type);
+
+        Debug.Log("init statement block = " + nextStatementBlock.type);
 
         //Push first block in statement
         BlockParser.instance.blockStack.Push(nextStatementBlock);
+
+        Debug.Log("Execute Statement");
 
         while (!statement.finished)
         {
@@ -273,6 +286,8 @@ public class ControlController : Singleton<ControlController>
                 else
                 {
                     nextStatementBlock = nextStatementBlock.nextBlock;
+
+                    Debug.Log("next statement block = " + nextStatementBlock.type);
 
                     if(nextStatementBlock.type == "iq_control_break") //If the next block is a break, terminate executing the statement immediately
                     {

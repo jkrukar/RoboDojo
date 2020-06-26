@@ -18,7 +18,7 @@ public class SoundController : Singleton<SoundController>
     {
         if (activeBlock != null)
         {
-            if (activeBlock.finished)
+            if (activeBlock.finished && !activeBlock.statementBlock)
             {
                 if (activeBlock.nextBlock != null)
                 {

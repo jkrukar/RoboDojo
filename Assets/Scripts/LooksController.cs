@@ -16,7 +16,7 @@ public class LooksController : Singleton<LooksController>
     // Update is called once per frame
     void Update()
     {
-        if (activeBlock != null)
+        if (activeBlock != null && !activeBlock.statementBlock)
         {
             if (activeBlock.finished)
             {

@@ -11,6 +11,7 @@ public class Block
     public List<BlockStatement> statements = new List<BlockStatement>();
     public Block nextBlock;
     public bool finished = false;
+    public bool statementBlock = false;
 }
 
 public class BlockField
