@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bot : Singleton<Bot>
 {
-    int coinCount = 0;
+    public int coinCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -18,9 +18,9 @@ public class Bot : Singleton<Bot>
         
     }
 
-    public void CollectCoin()
+    public void CollectCoin(int value)
     {
-        coinCount++;
+        coinCount += value;
         Debug.Log("coinCount = " + coinCount);
     }
 }
