@@ -7,15 +7,18 @@ public class DrivetrainController : Singleton<DrivetrainController>
     private string logPrefix = "[Drivetrain] ";
     private Block activeBlock = null;
     Rigidbody botRigidBody;
-    public float botDriveVeloctiy = 0.5f; //The current drive velocity expressed as a percentage of the max velocity 1.0
-    public float botTurnVeloctiy = 0.5f; //The current turn velocity expressed as a percentage of the max velocity 1.0
+    public float botDriveVelocity = 0.5f; //The current drive velocity expressed as a percentage of the max velocity 1.0
+    public float botTurnVelocity = 0.5f; //The current turn velocity expressed as a percentage of the max velocity 1.0
     public bool driving = false;
     public bool turning = false;
     public int drivePolarity = 1;
     public int turnPolarity = 1;
-    private float maxDriveVelocity = 3.0f; //Max velocity at 100% is 500mm/sec or 0.5m/s
+    private float physicsMaxDriveVelocity = 3.0f; //Max velocity at 100% is 500mm/sec or 0.5m/s
+    private float maxDriveVelocity = 2.0f; //Max velocity at 100% is 500mm/sec or 0.5m/s
     //private float maxTurnVelocity = 180.0f;  //Max angular velocity at 100% is 180'/s or pi rad/s
-    private float maxTurnVelocity = 7.15f;  //Max angular velocity at 100% is 180'/s or pi rad/s
+    private float physicsMaxTurnVelocity = 7.15f;  //Max angular velocity at 100% is 180'/s or pi rad/s
+    private float maxTurnVelocity = 180f;  //Max angular velocity at 100% is 180'/s or pi rad/s
+    public bool usePhysics = false;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +29,18 @@ public class DrivetrainController : Singleton<DrivetrainController>
     // Update is called once per frame
     void Update()
     {
+        if (!usePhysics)
+        {
+            if (driving)
+            {
+                botRigidBody.gameObject.transform.Translate(Vector3.forward * (botDriveVelocity*maxDriveVelocity) * drivePolarity * Time.deltaTime);
+            }
+
+            if (turning)
+            {
+                botRigidBody.gameObject.transform.Rotate(Vector3.up * (turnPolarity * (botTurnVelocity*maxTurnVelocity) * Time.deltaTime));
+            }
+        }        
 
         if (activeBlock != null && !activeBlock.statementBlock)
         {
@@ -48,24 +63,25 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
     private void FixedUpdate()
     {
-
-        if (driving)
+        if (usePhysics)
         {
-            botRigidBody.velocity = (maxDriveVelocity * botDriveVeloctiy) * botRigidBody.transform.forward * drivePolarity;
+            if (driving)
+            {
+                botRigidBody.velocity = (physicsMaxDriveVelocity * botDriveVelocity) * botRigidBody.transform.forward * drivePolarity;
+            }
+
+            if (turning)
+            {
+                //Quaternion deltaRotation = Quaternion.Euler((maxTurnVelocity * Vector3.up) * Time.deltaTime);
+                //botRigidBody.MoveRotation(botRigidBody.rotation * deltaRotation);
+
+                botRigidBody.angularVelocity = (physicsMaxTurnVelocity * botTurnVelocity) * botRigidBody.transform.up * turnPolarity; //USE THIS ONE
+                //Debug.Log("angularVelocity = " + botRigidBody.angularVelocity);
+
+                //botRigidBody.transform.rotation = botRigidBody.transform.rotation * Quaternion.AngleAxis((maxTurnVelocity * botTurnVeloctiy) * Time.deltaTime, Vector3.up);
+            }
         }
-
-        if (turning)
-        {
-            //Quaternion deltaRotation = Quaternion.Euler((maxTurnVelocity * Vector3.up) * Time.deltaTime);
-            //botRigidBody.MoveRotation(botRigidBody.rotation * deltaRotation);
-
-            botRigidBody.angularVelocity = (maxTurnVelocity * botTurnVeloctiy) * botRigidBody.transform.up * turnPolarity;
-            //Debug.Log("angularVelocity = " + botRigidBody.angularVelocity);
-
-
-
-            //botRigidBody.transform.rotation = botRigidBody.transform.rotation * Quaternion.AngleAxis((maxTurnVelocity * botTurnVeloctiy) * Time.deltaTime, Vector3.up);
-        }
+        
 
     }
 
@@ -194,7 +210,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
         Debug.Log(logPrefix + "Set Turn Velocity to " + newVelocity);
 
-        botTurnVeloctiy = newVelocity;
+        botTurnVelocity = newVelocity;
         block.finished = true;
     }
 
@@ -337,7 +353,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
         Debug.Log(logPrefix + "Set Drive Velocity to " + newVelocity);
 
-        botDriveVeloctiy = newVelocity;
+        botDriveVelocity = newVelocity;
         block.finished = true;
     }
 }
