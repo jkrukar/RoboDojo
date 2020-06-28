@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
@@ -36,5 +37,11 @@ public class UIController : MonoBehaviour
             thirdPersonCamera.SetActive(true);
             birdsEyeCamera.SetActive(false);
         }
+    }
+
+    public void GoHome()
+    {
+        Debug.Log("Go Home");
+        SceneManager.LoadScene("Home");
     }
 }

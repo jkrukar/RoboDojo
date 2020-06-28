@@ -7,6 +7,8 @@ TagManager:
   - Fire
   - Bot
   - Coin
+  - FileOptionsDropdown
+  - FileOptionsContainer
   layers:
   - Default
   - TransparentFX
