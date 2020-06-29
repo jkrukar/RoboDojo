@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Home.unity
     guid: b358ac80583cb4944a21032f1a4f53f7
   - enabled: 1
-    path: Assets/Scenes/Arena.unity
+    path: Assets/Scenes/Default Arena.unity
     guid: 0e0d8f1b31d1f6c4f9098508e0687b28
   m_configObjects: {}

@@ -11,45 +11,104 @@ public class HomeUIController : MonoBehaviour
     public Transform arenaListContainer;
     public GameObject ArenaOptionPrefab;
     public GameObject fileOptionPrefab;
-    private string inputFileDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\VEX_Simulator_Code";
+    public static string inputFileDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\VEX_Simulator_Files";
     private List<string> fileOptions = new List<string>();
+    private GameData gameData;
+    private Dictionary<string, ArenaOption> arenaOptionMap = new Dictionary<string, ArenaOption>();
+    private Dictionary<string, int> inputFileIndexMap = new Dictionary<string, int>();
 
     // Start is called before the first frame update
     void Start()
     {
+        gameData = LoadGameDataJSON();
+
+        foreach(ArenaOption option in gameData.arenaOptions)
+        {
+            arenaOptionMap.Add(option.name, option);
+        }
+
         GetInputFiles();
-        BuildArenaOptions();
-        BuildFileOptionDropdowns();
-    }
 
-    private void BuildArenaOptions()
-    {
-        //Build for default Arena
-        GameObject defaultArena = Instantiate(ArenaOptionPrefab, arenaListContainer);
-        Button defaultArenaStartButton = defaultArena.transform.Find("Start").GetComponent<Button>();
-        defaultArenaStartButton.onClick.AddListener(delegate { StartSimulation("Arena"); });
-        TextMeshProUGUI arenaName = defaultArena.transform.Find("ArenaName").GetComponent<TextMeshProUGUI>();
-        arenaName.SetText("Default Arena");
-
-
-        for (int i = 0; i < 3; i++)
+        foreach (ArenaOption arenaOption in gameData.arenaOptions)
         {
-            Instantiate(ArenaOptionPrefab, arenaListContainer);
+            BuildArenaOption(arenaOption);
         }
     }
 
-    private void BuildFileOptionDropdowns()
+    public static  GameData LoadGameDataJSON()
     {
-        foreach (GameObject dropdownObject in GameObject.FindGameObjectsWithTag("FileOptionsDropdown"))
+        GameData gameData = new GameData();
+        string path = Application.persistentDataPath + "/gameData.json";
+
+        if (File.Exists(path))
         {
-            Dropdown dropdown = dropdownObject.GetComponent<Dropdown>();
-            dropdown.ClearOptions();
-            dropdown.AddOptions(fileOptions);
+            //Debug.Log("Found game data file");
+            gameData = JsonUtility.FromJson<GameData>(File.ReadAllText(path));
         }
+        else
+        {
+            //Debug.Log("Did not find game data file");
+            ArenaOption defaultArena = new ArenaOption();
+            defaultArena.name = "Default Arena";
+            defaultArena.highscore = 0;
+            defaultArena.inputFile = null;
+
+            gameData.arenaOptions = new ArenaOption[] { defaultArena };
+
+            SaveGameDataJSON(gameData);
+        }
+        
+        return gameData;
+    }
+
+    public static void SaveGameDataJSON(GameData gameData)
+    {
+        string gameDataJSON = JsonUtility.ToJson(gameData);
+        File.WriteAllText(Application.persistentDataPath + "/gameData.json", gameDataJSON);
+        //Debug.Log("persistent data path = " + Application.persistentDataPath);
+    }
+
+    private void BuildArenaOption(ArenaOption arenaOption)
+    {
+        GameObject arenaOptionUI = Instantiate(ArenaOptionPrefab, arenaListContainer);
+
+        Button defaultArenaStartButton = arenaOptionUI.transform.Find("Start").GetComponent<Button>();
+        defaultArenaStartButton.onClick.AddListener(delegate { StartSimulation(arenaOption); });
+
+        TextMeshProUGUI arenaName = arenaOptionUI.transform.Find("ArenaName").GetComponent<TextMeshProUGUI>();
+        arenaName.SetText(arenaOption.name);
+
+        TextMeshProUGUI highscore = arenaOptionUI.transform.Find("Highscore").GetComponent<TextMeshProUGUI>();
+        highscore.SetText("High Score: " + arenaOption.highscore.ToString());
+
+        Dropdown dropdown = arenaOptionUI.transform.Find("FileOptions").GetComponent<Dropdown>();
+        dropdown.ClearOptions();
+        dropdown.AddOptions(fileOptions);
+
+        if (inputFileIndexMap.ContainsKey(arenaOption.inputFile))
+        {
+            dropdown.value = inputFileIndexMap[arenaOption.inputFile];
+        }
+
+        dropdown.onValueChanged.AddListener(delegate { OnInputFileChange(arenaOption.name, dropdown); });
+    }
+
+    private void OnInputFileChange(string arenaName, Dropdown dropdown)
+    {
+        ArenaOption arena = arenaOptionMap[arenaName];
+        arena.inputFile = dropdown.options[dropdown.value].text;
+        SaveGameDataJSON(gameData);
     }
 
     private void GetInputFiles()
     {
+        if (!Directory.Exists(inputFileDirectory))
+        {
+            Directory.CreateDirectory(inputFileDirectory);
+        }
+
+        int dropdownIndex = 0;
+
         foreach (string path in Directory.GetFiles(inputFileDirectory))
         {
             string[] splitPath = path.Split('\\');
@@ -61,6 +120,8 @@ public class HomeUIController : MonoBehaviour
             if(extension == "iqblocks")
             {
                 fileOptions.Add(name);
+                inputFileIndexMap.Add(name, dropdownIndex);
+                dropdownIndex++;
             }
         }
     }
@@ -71,9 +132,11 @@ public class HomeUIController : MonoBehaviour
         
     }
 
-    void StartSimulation(string arenaName)
+    void StartSimulation(ArenaOption arena)
     {
-        SceneManager.LoadScene(arenaName);
+        PlayerPrefs.SetString("currentArena", arena.name);
+        PlayerPrefs.SetString("inputFileName", arena.inputFile);
+        SceneManager.LoadScene(arena.name);
     }
 
 }

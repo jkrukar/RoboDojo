@@ -27,7 +27,10 @@ public class BlockParser : Singleton<BlockParser>
 
     void Awake()
     {
-        BuildBlocksFromFile("Assets/Resources/read2.iqblocks");
+        string filename = PlayerPrefs.GetString("inputFileName");
+        string filePath = HomeUIController.inputFileDirectory + "/" + filename + ".iqblocks";
+        Debug.Log("Input File: " + filePath);
+        BuildBlocksFromFile(filePath);
 
         foreach(Block block in topBlocks) //Top blocks are always event blocks
         {
