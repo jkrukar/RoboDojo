@@ -179,7 +179,23 @@ public class DrivetrainController : Singleton<DrivetrainController>
                 turning = true;
             }
 
-            float degreesTurned = Vector3.Angle(originalRotation, botRigidBody.transform.forward);
+            float degreesTurned = Vector3.SignedAngle(originalRotation, botRigidBody.transform.forward, Vector3.up);
+
+            if(degreesTurned < 0 && turnPolarity > 0)
+            {
+                degreesTurned = 360 + degreesTurned;
+            }
+            else if(turnPolarity < 0)
+            {
+                if(degreesTurned > 0)
+                {
+                    degreesTurned = 180 + (180 - degreesTurned);
+                }
+                else
+                {
+                    degreesTurned = degreesTurned * -1;
+                }
+            }
 
             //Debug.Log("degreesTurned= " + originalRotation);
             //Debug.Log("degreesTurned= " + botRigidBody.transform.forward);

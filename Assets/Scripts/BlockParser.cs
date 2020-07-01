@@ -106,6 +106,24 @@ public class BlockParser : Singleton<BlockParser>
         {
             SensingController.instance.ExecuteBlock(block);
         }
+        
+    }
+
+    public void ResetBlockStack(BlockStack blockStack)
+    {
+        bool stackIsReset = false;
+        Block nextBlock = blockStack.startBlock;
+
+        while (!stackIsReset)
+        {
+            nextBlock.finished = false;
+            nextBlock = nextBlock.nextBlock;
+
+            if(nextBlock == null)
+            {
+                stackIsReset = true;
+            }
+        }
     }
 
     public bool ResolveBlockCondition(BlockValue value)
@@ -183,7 +201,7 @@ public class BlockParser : Singleton<BlockParser>
 
         if (value.block != null)
         {
-            if (value.block.type.Contains("iq_variables_boolean_variable"))
+            if (value.block.type.Contains("iq_variables"))
             {
                 resolvedState = VariablesController.instance.GetBool(value.block);
             }
@@ -191,6 +209,10 @@ public class BlockParser : Singleton<BlockParser>
             {
                 resolvedState = ResolveBooleanOperator(value.block);
             }
+        }
+        else
+        {
+            resolvedState = bool.Parse(value.shadow.field.value);
         }
 
         return resolvedState;
@@ -463,9 +485,10 @@ public class BlockParser : Singleton<BlockParser>
     }
 
     //Builds a BlockValue from a <statement> element
-    private BlockStatement BuildBlockStatement(XmlNode node)
+    private BlockStatement BuildBlockStatement(XmlNode node, Block parentBlock)
     {
         BlockStatement newStatement = new BlockStatement();
+        newStatement.parentBlock = parentBlock;
 
         XmlAttributeCollection attributes = node.Attributes;
         XmlNodeList blocks = node.SelectNodes("child::d:block", nsManager);
@@ -623,7 +646,7 @@ public class BlockParser : Singleton<BlockParser>
         {
             foreach (XmlNode nextStatementElement in statements)
             {
-                BlockStatement newStatement = BuildBlockStatement(nextStatementElement);
+                BlockStatement newStatement = BuildBlockStatement(nextStatementElement, newBlock);
                 newBlock.statements.Add(newStatement);
             }
         }

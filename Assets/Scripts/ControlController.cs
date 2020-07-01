@@ -8,6 +8,8 @@ public class ControlController : Singleton<ControlController>
     private Block activeBlock = null;
     private bool gameRunning = true;
 
+    Stack<BlockStatement> statementStack = new Stack<BlockStatement>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,8 +67,12 @@ public class ControlController : Singleton<ControlController>
             case "iq_control_forever":
                 StartCoroutine(RepeatForever(block));
                 break;
-            //case "iq_control_break":  Handled implicitly in ExecuteStatement, by terminating if a break block is encountered
-            //    break;
+            case "iq_control_break":  ///Handled implicitly in ExecuteStatement, by terminating if a break block is encountered
+                block.finished = true;
+                break;
+            case "iq_control_false_head":
+                block.finished = true;
+                break;
         }
     }
 
@@ -129,7 +135,7 @@ public class ControlController : Singleton<ControlController>
         BlockStatement statement = block.statements[0];
         statement.finished = true; //This will get the statement started, although it's no tehcnically finished
 
-        while (gameRunning)
+        while (gameRunning && !statement.brokenOut)
         {
             if (statement.finished)
             {
@@ -148,6 +154,9 @@ public class ControlController : Singleton<ControlController>
 
         activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
+        statement.brokenOut = false;
+
+        Debug.Log("CP1");
 
         yield return null;
     }
@@ -176,7 +185,7 @@ public class ControlController : Singleton<ControlController>
         BlockStatement statement = block.statements[0];
         statement.finished = true; //This will get the statement started, although it's no technically finished
 
-        while (condition)
+        while (condition && !statement.brokenOut)
         {
             if (statement.finished)
             {
@@ -196,6 +205,7 @@ public class ControlController : Singleton<ControlController>
 
         activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
+        statement.brokenOut = false;
 
         yield return null;
     }
@@ -207,7 +217,7 @@ public class ControlController : Singleton<ControlController>
         BlockStatement statement = block.statements[0];
         statement.finished = true; //This will get the statement started, although it's no technically finished
 
-        while (!condition)
+        while (!condition && !statement.brokenOut)
         {
             if (statement.finished)
             {
@@ -227,6 +237,7 @@ public class ControlController : Singleton<ControlController>
 
         activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
+        statement.brokenOut = false;
 
         yield return null;
     }
@@ -238,7 +249,7 @@ public class ControlController : Singleton<ControlController>
 
         statement.finished = true; //This will get the statement started, although it's no technically finished
 
-        while (iterations > 0)
+        while (iterations > 0 && !statement.brokenOut)
         {
             iterations--;
             statement.finished = false; //reset statement
@@ -247,6 +258,7 @@ public class ControlController : Singleton<ControlController>
         
         activeBlock = block; //Reset activeBlock after executing statement blocks
         block.finished = true;
+        statement.brokenOut = false;
 
         yield return null;
     }
@@ -255,6 +267,8 @@ public class ControlController : Singleton<ControlController>
     {
         Block nextStatementBlock = statement.block;
         Block finalStatementBlock = nextStatementBlock;
+
+        statementStack.Push(statement);
 
         while(finalStatementBlock.nextBlock != null)
         {
@@ -267,9 +281,14 @@ public class ControlController : Singleton<ControlController>
         Debug.Log("init statement block = " + nextStatementBlock.type);
 
         //Push first block in statement
-        BlockParser.instance.blockStack.Push(nextStatementBlock);
+        Block statementHead = new Block();
+        statementHead.type = "iq_control_false_head";
+        statementHead.nextBlock = nextStatementBlock;
+        nextStatementBlock = statementHead;
 
-        Debug.Log("Execute Statement");
+        BlockParser.instance.blockStack.Push(nextStatementBlock); //Create a null block as the head to kick things off - mark as finished right away
+
+        Debug.Log("Execute Statement: " + statement.parentBlock.type);
 
         while (!statement.finished)
         {
@@ -287,10 +306,31 @@ public class ControlController : Singleton<ControlController>
                 {
                     nextStatementBlock = nextStatementBlock.nextBlock;
 
-                    Debug.Log("next statement block = " + nextStatementBlock.type);
+                    //Debug.Log("next statement block = " + nextStatementBlock.type);
 
-                    if(nextStatementBlock.type == "iq_control_break") //If the next block is a break, terminate executing the statement immediately
+                    if(nextStatementBlock.type.Contains("iq_control_break")) //If the next block is a break, terminate executing the statement immediately
                     {
+                        //Debug.Log("statement stack size = " + statementStack.Count);
+                        //Pop blocks off the statement stack
+
+                        bool doneBreaking = false;
+
+                        while (!doneBreaking)
+                        {
+                            BlockStatement nextStatement = statementStack.Pop();
+
+                            //Debug.Log("Set " + nextStatement.parentBlock.type + " to finished");
+                            nextStatement.finished = true;                         
+
+                            if (!nextStatement.parentBlock.type.Contains("if_then"))
+                            {
+                                nextStatement.brokenOut = true;
+                                doneBreaking = true;
+                            }
+                            
+                            //Debug.Log("next block in statement stack = " + nextStatement.parentBlock.type);
+                        }
+
                         statement.finished = true;
                     }
                     else
@@ -304,6 +344,11 @@ public class ControlController : Singleton<ControlController>
                 yield return null;
             }
         }
+
+        if(statementStack.Count > 0 && statementStack.Peek() == statement) //If this statement is at the top of the stack, pop it off to finish
+        {
+            statementStack.Pop();
+        }        
 
         yield return null;
     }

@@ -33,10 +33,11 @@ public class BlockValue
 
 public class BlockStatement
 {
+    public Block parentBlock;
     public Block block;
     public string name;
     public bool finished = false;
-
+    public bool brokenOut = false;
 }
 
 public class BlockShadow
