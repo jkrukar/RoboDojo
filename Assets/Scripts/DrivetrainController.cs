@@ -29,18 +29,21 @@ public class DrivetrainController : Singleton<DrivetrainController>
     // Update is called once per frame
     void Update()
     {
-        if (!usePhysics)
+        if (BlockParser.gamePlaying)
         {
-            if (driving)
+            if (!usePhysics)
             {
-                botRigidBody.gameObject.transform.Translate(Vector3.forward * (botDriveVelocity*maxDriveVelocity) * drivePolarity * Time.deltaTime);
-            }
+                if (driving)
+                {
+                    botRigidBody.gameObject.transform.Translate(Vector3.forward * (botDriveVelocity * maxDriveVelocity) * drivePolarity * Time.deltaTime);
+                }
 
-            if (turning)
-            {
-                botRigidBody.gameObject.transform.Rotate(Vector3.up * (turnPolarity * (botTurnVelocity*maxTurnVelocity) * Time.deltaTime));
+                if (turning)
+                {
+                    botRigidBody.gameObject.transform.Rotate(Vector3.up * (turnPolarity * (botTurnVelocity * maxTurnVelocity) * Time.deltaTime));
+                }
             }
-        }        
+        }
 
         if (activeBlock != null && !activeBlock.statementBlock)
         {
@@ -63,26 +66,32 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
     private void FixedUpdate()
     {
-        if (usePhysics)
+        if (BlockParser.gamePlaying)
         {
-            if (driving)
+            if (usePhysics)
             {
-                botRigidBody.velocity = (physicsMaxDriveVelocity * botDriveVelocity) * botRigidBody.transform.forward * drivePolarity;
-            }
+                if (driving)
+                {
+                    botRigidBody.velocity = (physicsMaxDriveVelocity * botDriveVelocity) * botRigidBody.transform.forward * drivePolarity;
+                }
 
-            if (turning)
-            {
-                //Quaternion deltaRotation = Quaternion.Euler((maxTurnVelocity * Vector3.up) * Time.deltaTime);
-                //botRigidBody.MoveRotation(botRigidBody.rotation * deltaRotation);
+                if (turning)
+                {
+                    //Quaternion deltaRotation = Quaternion.Euler((maxTurnVelocity * Vector3.up) * Time.deltaTime);
+                    //botRigidBody.MoveRotation(botRigidBody.rotation * deltaRotation);
 
-                botRigidBody.angularVelocity = (physicsMaxTurnVelocity * botTurnVelocity) * botRigidBody.transform.up * turnPolarity; //USE THIS ONE
-                //Debug.Log("angularVelocity = " + botRigidBody.angularVelocity);
+                    botRigidBody.angularVelocity = (physicsMaxTurnVelocity * botTurnVelocity) * botRigidBody.transform.up * turnPolarity; //USE THIS ONE
+                    //Debug.Log("angularVelocity = " + botRigidBody.angularVelocity);
 
-                //botRigidBody.transform.rotation = botRigidBody.transform.rotation * Quaternion.AngleAxis((maxTurnVelocity * botTurnVeloctiy) * Time.deltaTime, Vector3.up);
+                    //botRigidBody.transform.rotation = botRigidBody.transform.rotation * Quaternion.AngleAxis((maxTurnVelocity * botTurnVeloctiy) * Time.deltaTime, Vector3.up);
+                }
             }
         }
-        
-
+        else
+        {
+            botRigidBody.velocity = Vector3.zero;
+            botRigidBody.angularVelocity = Vector3.zero;
+        }
     }
 
     public void ExecuteBlock(Block block)

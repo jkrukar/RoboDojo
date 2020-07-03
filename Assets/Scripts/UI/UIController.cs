@@ -13,7 +13,6 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI scoreboard;
     public TextMeshProUGUI arenaTitle;
     public Bot bot;
-    public bool gamePlaying = false;
     public bool sensorsShowing = true;
 
     public Sprite playIcon;
@@ -88,10 +87,10 @@ public class UIController : MonoBehaviour
 
     public void PlayStop()
     {
-        gamePlaying = !gamePlaying;
-        Debug.Log("gamePlaying = " + gamePlaying);
+        BlockParser.gamePlaying = !BlockParser.gamePlaying;
+        Debug.Log("gamePlaying = " + BlockParser.gamePlaying);
 
-        if (gamePlaying)
+        if (BlockParser.gamePlaying)
         {                   
             playStopButton.sprite = stopIcon;
         }
@@ -103,7 +102,9 @@ public class UIController : MonoBehaviour
 
     public void Restart()
     {
-        Debug.Log("Restart");
+        //Debug.Log("Restart");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        StartCoroutine(ArenaManager.instance.LoadSceneFromBundle(Application.dataPath + "\\AssetBundles\\arena ui", LoadSceneMode.Additive));
     }
 
     public void ToggleSensorDisplay()

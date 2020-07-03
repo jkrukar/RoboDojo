@@ -23,7 +23,8 @@ public class BlockParser : Singleton<BlockParser>
     int controllerReadyCounter = 0;
 
     public GameObject bot;
-    public Rigidbody botRigidBody; 
+    public Rigidbody botRigidBody;
+    public static bool gamePlaying = false;
 
     void Awake()
     {
@@ -54,7 +55,11 @@ public class BlockParser : Singleton<BlockParser>
         if(controllerReadyCounter == 7)
         {
             controllerReadyCounter = 0;
-            ExecuteStack();
+
+            if (gamePlaying)
+            {
+                ExecuteStack();
+            }            
         }
     }
 
