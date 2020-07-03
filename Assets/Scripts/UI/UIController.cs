@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     public GameObject thirdPersonCamera;
     public GameObject birdsEyeCamera;
     public TextMeshProUGUI scoreboard;
+    public TextMeshProUGUI arenaTitle;
     public Bot bot;
     public bool gamePlaying = false;
     public bool sensorsShowing = true;
@@ -34,7 +35,7 @@ public class UIController : MonoBehaviour
 
     private void Awake()
     {
-        //SceneManager.LoadScene("ArenaUI", LoadSceneMode.Additive);
+        arenaTitle.SetText(PlayerPrefs.GetString("currentArena"));
     }
 
     // Start is called before the first frame update
@@ -61,6 +62,7 @@ public class UIController : MonoBehaviour
         rotationGlobal.SetText(bot.transform.rotation.eulerAngles.y.ToString("0.000"));
         velocityDrive.SetText((DrivetrainController.instance.botDriveVelocity*100).ToString("0.000"));
         velocityTurn.SetText((DrivetrainController.instance.botTurnVelocity*100).ToString("0.000"));
+        distance.SetText((SensingController.instance.distanceSensorValue * 1000).ToString("0.000"));
 
     }
 

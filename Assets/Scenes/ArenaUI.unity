@@ -1439,6 +1439,7 @@ MonoBehaviour:
   thirdPersonCamera: {fileID: 952629762}
   birdsEyeCamera: {fileID: 1708025869}
   scoreboard: {fileID: 150402547}
+  arenaTitle: {fileID: 762176163}
   bot: {fileID: 0}
   gamePlaying: 0
   sensorsShowing: 1

@@ -1,0 +1,52 @@
+ManifestFileVersion: 0
+CRC: 73425755
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 26eda444706174755fb93d090e747df0
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 250abc45eb46f34dec922f187866177f
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 104
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1a57c1d26d5ec57438d44ce8594fa480, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: bdf754d95a558394981f36522cb07a73, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 146
+  Script: {instanceID: 0}
+- Class: 157
+  Script: {instanceID: 0}
+Assets:
+- Assets/Scenes/Export Arena.unity
+Dependencies: []
