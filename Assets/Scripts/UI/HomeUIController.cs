@@ -20,9 +20,18 @@ public class HomeUIController : MonoBehaviour
     private Dictionary<string, int> inputFileIndexMap = new Dictionary<string, int>();
     private Dictionary<ArenaOption, bool> isAssetBundleMap = new Dictionary<ArenaOption, bool>();
 
+
     // Start is called before the first frame update
     void Start()
     {
+
+        if(ArenaManager.instance == null)
+        {
+            GameObject newArenaManager = new GameObject();
+            newArenaManager.name = "ArenaManager";
+            newArenaManager.AddComponent<ArenaManager>();
+        }
+
         gameData = LoadGameDataJSON();
 
         foreach(ArenaOption option in gameData.arenaOptions)
@@ -38,7 +47,7 @@ public class HomeUIController : MonoBehaviour
         {
             bool buildOption = false;
 
-            if(arenaOption.name == "Default Arena" || Application.CanStreamedLevelBeLoaded(arenaOption.name))
+            if((arenaOption.name == "Default Arena" || Application.CanStreamedLevelBeLoaded(arenaOption.name)) && arenaOption.name != "ArenaUI")
             {
                 buildOption = true;
                 isAssetBundleMap.Add(arenaOption, false);
@@ -240,38 +249,15 @@ public class HomeUIController : MonoBehaviour
 
         if (isAssetBundleMap[arena])
         {
-            StartCoroutine(LoadSceneFromBundle(arenasFileDirectory + "\\" + arena.name));
+            StartCoroutine(ArenaManager.instance.LoadSceneFromBundle(arenasFileDirectory + "\\" + arena.name, LoadSceneMode.Single));
         }
         else
         {
             SceneManager.LoadScene(arena.name);
-        }        
-    }
+            //SceneManager.LoadScene("ArenaUI", LoadSceneMode.Additive);
 
-    public IEnumerator LoadSceneFromBundle(string path)
-    {
-
-        AssetBundle loadedAssetBundle = AssetBundle.LoadFromFile(path);
-
-        if (loadedAssetBundle == null)
-        {
-            Debug.Log("Failed to load AssetBundle!");
-            yield return null;
         }
-        else
-        {
-            if (loadedAssetBundle.isStreamedSceneAssetBundle)
-            {
-                string[] scenePaths = loadedAssetBundle.GetAllScenePaths();
-                string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePaths[0]);
-                AsyncOperation sceneLoad = SceneManager.LoadSceneAsync(sceneName);
 
-                while (!sceneLoad.isDone)
-                {
-                    yield return null;
-                }
-            }
-        }
+        StartCoroutine(ArenaManager.instance.LoadSceneFromBundle(Application.dataPath + "\\AssetBundles\\arena ui", LoadSceneMode.Additive));
     }
-
 }

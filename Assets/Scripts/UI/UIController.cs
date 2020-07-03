@@ -10,11 +10,17 @@ public class UIController : MonoBehaviour
     public GameObject thirdPersonCamera;
     public GameObject birdsEyeCamera;
     public TextMeshProUGUI scoreboard;
+    public Bot bot;
+
+    private void Awake()
+    {
+        //SceneManager.LoadScene("ArenaUI", LoadSceneMode.Additive);
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        bot = GameObject.FindGameObjectWithTag("Bot").GetComponent<Bot>();
     }
 
     // Update is called once per frame

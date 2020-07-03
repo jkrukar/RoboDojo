@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Other Export Arena.unity
     guid: 56f1048d7b14dc04dbfb406cea32d759
+  - enabled: 0
+    path: Assets/Scenes/ArenaUI.unity
+    guid: 547ca3bfaf70c334688eeecb07fa56bf
   m_configObjects: {}

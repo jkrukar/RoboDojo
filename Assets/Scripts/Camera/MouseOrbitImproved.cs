@@ -22,6 +22,7 @@ public class MouseOrbitImproved : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        target = GameObject.FindGameObjectWithTag("Bot").transform;
         Vector3 angles = transform.eulerAngles;
         x = angles.y;
         y = 45;
