@@ -56,11 +56,11 @@ public class UIController : MonoBehaviour
     private void UpdateSensorDataPanel()
     {
         positionX.SetText((bot.transform.position.x*1000).ToString("0.000"));
-        positionY.SetText((bot.transform.position.y*1000).ToString("0.000"));
+        positionY.SetText((bot.transform.position.z*1000).ToString("0.000"));
         rotationLocal.SetText(bot.transform.localRotation.eulerAngles.y.ToString("0.000"));
         rotationGlobal.SetText(bot.transform.rotation.eulerAngles.y.ToString("0.000"));
-        velocityDrive.SetText((DrivetrainController.instance.botDriveVelocity*100).ToString("0.000"));
-        velocityTurn.SetText((DrivetrainController.instance.botTurnVelocity*100).ToString("0.000"));
+        velocityDrive.SetText((DrivetrainController.instance.botDriveVelocity*100).ToString("0.00"));
+        velocityTurn.SetText((DrivetrainController.instance.botTurnVelocity*100).ToString("0.00"));
         distance.SetText((SensingController.instance.distanceSensorValue * 1000).ToString("0.000"));
 
     }
@@ -102,6 +102,10 @@ public class UIController : MonoBehaviour
 
     public void Restart()
     {
+        if (BlockParser.gamePlaying)
+        {
+            PlayStop();
+        }
         //Debug.Log("Restart");
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         StartCoroutine(ArenaManager.instance.LoadSceneFromBundle(Application.dataPath + "\\AssetBundles\\arena ui", LoadSceneMode.Additive));
