@@ -89,8 +89,11 @@ public class DrivetrainController : Singleton<DrivetrainController>
         }
         else
         {
-            botRigidBody.velocity = Vector3.zero;
-            botRigidBody.angularVelocity = Vector3.zero;
+            if (usePhysics)
+            {
+                botRigidBody.velocity = Vector3.zero;
+                botRigidBody.angularVelocity = Vector3.zero;
+            }
         }
     }
 
@@ -172,6 +175,8 @@ public class DrivetrainController : Singleton<DrivetrainController>
 
         Debug.Log(logPrefix + " Drive (" + polarity + "): for " + amount + " degrees and dontwait=" + andDontWait);
 
+        float targetRotation = botRigidBody.transform.rotation.eulerAngles.y + (amount * turnPolarity);
+
         turning = true;
         bool doneTurning = false;
 
@@ -214,6 +219,9 @@ public class DrivetrainController : Singleton<DrivetrainController>
             {
                 doneTurning = true;
                 StopDriving();
+
+                Vector3 botEulerRotation = botRigidBody.transform.rotation.eulerAngles;
+                botRigidBody.transform.rotation = Quaternion.Euler(new Vector3(botEulerRotation.x,targetRotation, botEulerRotation.z));
 
                 if (!andDontWait)
                 {

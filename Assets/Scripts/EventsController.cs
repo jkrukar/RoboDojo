@@ -100,6 +100,7 @@ public class EventsController : Singleton<EventsController>
     public IEnumerator ExecuteBroadcastStackAndWait(Block block)
     {
         string broadcastMessage = block.values[0].shadow.field.value;
+        Debug.Log("ExecuteBroadcastStackAndWait = " + broadcastMessage);
         BlockStack broadcastStack = whenBroadcastedStacks[broadcastMessage];
         BlockParser.instance.ResetBlockStack(broadcastStack);
 
