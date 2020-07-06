@@ -6,7 +6,8 @@ public class SensingController : Singleton<SensingController>
 {
     private string logPrefix = "[Sensing] ";
     private GameObject distanceSensor;
-    public float distanceSensorValue;
+    public float distanceSensorValue0;
+    public float distanceSensorValue45;
 
     // Start is called before the first frame update
     void Start()
@@ -47,7 +48,14 @@ public class SensingController : Singleton<SensingController>
         if(Physics.Raycast(distanceSensor.transform.position, distanceSensor.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
         {
             Debug.DrawRay(distanceSensor.transform.position, distanceSensor.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-            distanceSensorValue = hit.distance;
+            distanceSensorValue0 = hit.distance;
+        }
+
+        RaycastHit hit2;
+        if (Physics.Raycast(distanceSensor.transform.position, distanceSensor.transform.TransformDirection(Vector3.forward)+ distanceSensor.transform.TransformDirection(Vector3.down), out hit2, Mathf.Infinity))
+        {
+            Debug.DrawRay(distanceSensor.transform.position, distanceSensor.transform.TransformDirection(Vector3.forward) + distanceSensor.transform.TransformDirection(Vector3.down) * hit2.distance, Color.yellow);
+            distanceSensorValue45 = hit2.distance;
         }
     }
 }

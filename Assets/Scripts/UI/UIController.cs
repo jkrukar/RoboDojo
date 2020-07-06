@@ -28,7 +28,8 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI colorDown;
     public TextMeshProUGUI bumperLeft;
     public TextMeshProUGUI bumperRight;
-    public TextMeshProUGUI distance;
+    public TextMeshProUGUI distance0;
+    public TextMeshProUGUI distance45;
     public TextMeshProUGUI velocityDrive;
     public TextMeshProUGUI velocityTurn;
 
@@ -57,11 +58,13 @@ public class UIController : MonoBehaviour
     {
         positionX.SetText((bot.transform.position.x*1000).ToString("0.000"));
         positionY.SetText((bot.transform.position.z*1000).ToString("0.000"));
-        rotationLocal.SetText(bot.transform.localRotation.eulerAngles.y.ToString("0.000"));
+        //rotationLocal.SetText(bot.transform.localRotation.eulerAngles.y.ToString("0.000"));
+        rotationLocal.SetText(Vector3.SignedAngle(bot.transform.forward, Vector3.forward, Vector3.up).ToString("0.000"));
         rotationGlobal.SetText(bot.transform.rotation.eulerAngles.y.ToString("0.000"));
         velocityDrive.SetText((DrivetrainController.instance.botDriveVelocity*100).ToString("0.00"));
         velocityTurn.SetText((DrivetrainController.instance.botTurnVelocity*100).ToString("0.00"));
-        distance.SetText((SensingController.instance.distanceSensorValue * 1000).ToString("0.000"));
+        distance0.SetText((SensingController.instance.distanceSensorValue0 * 1000).ToString("0.000"));
+        distance45.SetText((SensingController.instance.distanceSensorValue45 * 1000).ToString("0.000"));
 
     }
 
