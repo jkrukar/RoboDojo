@@ -109,8 +109,13 @@ public class UIController : MonoBehaviour
         {
             PlayStop();
         }
-        //Debug.Log("Restart");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        
+        Scene activeScene = SceneManager.GetActiveScene();
+
+        Debug.Log("Restart: ");
+
+        SceneManager.LoadScene(activeScene.name);
+
         StartCoroutine(ArenaManager.instance.LoadSceneFromBundle(Application.dataPath + "\\AssetBundles\\arena ui", LoadSceneMode.Additive));
     }
 
