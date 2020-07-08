@@ -6,6 +6,8 @@ public class SensingController : Singleton<SensingController>
 {
     private string logPrefix = "[Sensing] ";
 
+    private GameObject bot;
+
     private GameObject distanceSensor;
     public float distanceSensorValue0;
     public float distanceSensorValue45;
@@ -27,6 +29,7 @@ public class SensingController : Singleton<SensingController>
         distanceSensor = GameObject.Find("DistanceSensor");
         leftBumper = GameObject.Find("LeftBumper");
         rightBumper = GameObject.Find("RightBumper");
+        bot = GameObject.FindGameObjectWithTag("Bot");
 
         leftBumperSensor = leftBumper.GetComponent<BumperSensor>();
         rightBumperSensor = rightBumper.GetComponent<BumperSensor>();
@@ -65,10 +68,6 @@ public class SensingController : Singleton<SensingController>
         GetDistanceSensorReading();
 
         BlockParser.instance.ReceiveControllerReadySignal();
-
-        Debug.Log("rightBumperState = " + rightBumperSensor.collisionState);
-        Debug.Log("leftBumperState = " + leftBumperSensor.collisionState);
-
     }
 
     public void ExecuteBlock(Block block)
@@ -77,15 +76,8 @@ public class SensingController : Singleton<SensingController>
 
         switch (block.type)
         {
-            case "iq_sensing_distance_from":
-                break;
-            case "iq_sensing_object_in_front":
-                break;
-            case "iq_events_when_timer":
-                break;
-            case "iq_events_when_started":
-                break;
-            case "iq_events_when_broadcasted":
+            case "iq_sensing_reset_timer":
+                EventsController.instance.ResetBotTimer();
                 break;
         }
     }
@@ -121,6 +113,20 @@ public class SensingController : Singleton<SensingController>
                         result *= 0.0393701f; //convert from mm to inches
                         Debug.Log("\tconvert to inches!=" + result);
                     }
+                    break;
+
+                case "iq_sensing_timer_value":
+
+                    result = EventsController.instance.botTimer;
+                    break;
+
+                case "iq_sensing_drive_rotation":
+
+                    result = Vector3.SignedAngle(bot.transform.forward, Vector3.forward, Vector3.up);
+                    break;
+                case "iq_sensing_drive_heading":
+
+                    result = bot.transform.rotation.eulerAngles.y;
                     break;
             }
         }
@@ -170,6 +176,13 @@ public class SensingController : Singleton<SensingController>
                         result = rightBumperSensor.collisionState;
                     }
 
+                    break;
+
+                case "iq_sensing_drive_is_done":
+                    result = DrivetrainController.instance.driving;
+                    break;
+                case "iq_sensing_drive_is_moving":
+                    result = DrivetrainController.instance.driving || DrivetrainController.instance.turning;
                     break;
             }
         }

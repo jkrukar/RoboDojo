@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 
 public class UIController : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI distance45;
     public TextMeshProUGUI velocityDrive;
     public TextMeshProUGUI velocityTurn;
+    public TextMeshProUGUI botTime;
+    public TextMeshProUGUI arenaTime;
 
     private void Awake()
     {
@@ -68,6 +71,19 @@ public class UIController : MonoBehaviour
         bumperLeft.SetText(SensingController.instance.leftBumperSensor.collisionState.ToString());
         bumperRight.SetText(SensingController.instance.rightBumperSensor.collisionState.ToString());
 
+        string botTimeString = GetTimeString(EventsController.instance.botTimer);
+        botTime.SetText(botTimeString);
+
+        string arenaTimeString = GetTimeString(EventsController.instance.arenaTimer);
+        arenaTime.SetText(arenaTimeString);
+    }
+
+    public static string GetTimeString(float timeInSeconds)
+    {
+        int seconds = (int)timeInSeconds;
+        int milliseconds = (int)((timeInSeconds - (float)seconds) * 1000f);
+        int minutes = seconds / 60;
+        return minutes.ToString("D2") + ":" + (seconds % 60).ToString("D2") + ":" + milliseconds.ToString("D3");
     }
 
     public void SwitchCameras()

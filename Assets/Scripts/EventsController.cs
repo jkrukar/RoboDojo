@@ -5,7 +5,8 @@ using UnityEngine;
 public class EventsController : Singleton<EventsController>
 {
     private string logPrefix = "[Events] ";
-    public float timer = 0.0f;
+    public float arenaTimer = 0.0f;
+    public float botTimer = 0.0f;
     List<BlockStack> whenStartedStacks = new List<BlockStack>();
     Dictionary<float,BlockStack> whenTimerStacks = new Dictionary<float,BlockStack>();
     Dictionary<string,BlockStack> whenBroadcastedStacks = new Dictionary<string,BlockStack>();
@@ -35,13 +36,17 @@ public class EventsController : Singleton<EventsController>
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
+        if (BlockParser.gamePlaying)
+        {
+            arenaTimer += Time.deltaTime;
+            botTimer += Time.deltaTime;
+        }        
 
         List<float> readyTimers = new List<float>();
 
         foreach (KeyValuePair<float, BlockStack> kvp in whenTimerStacks)
         {
-            if(timer >= kvp.Key)
+            if(botTimer >= kvp.Key)
             {
                 readyTimers.Add(kvp.Key);
             }
@@ -85,6 +90,11 @@ public class EventsController : Singleton<EventsController>
                 whenBroadcastedStacks.Add(message,new BlockStack(block, null));
                 break;
         }
+    }
+
+    public void ResetBotTimer()
+    {
+        botTimer = 0f;
     }
 
     public void ExecuteBroadcastStack(Block block)
