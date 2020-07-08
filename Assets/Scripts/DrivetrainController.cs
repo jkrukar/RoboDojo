@@ -19,6 +19,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
     private float physicsMaxTurnVelocity = 7.15f;  //Max angular velocity at 100% is 180'/s or pi rad/s
     private float maxTurnVelocity = 180f;  //Max angular velocity at 100% is 180'/s or pi rad/s
     public bool usePhysics = false;
+    public bool driveTimedOut = false;
 
     // Start is called before the first frame update
     void Start()
@@ -125,21 +126,131 @@ public class DrivetrainController : Singleton<DrivetrainController>
             case "iq_drivetrain_set_turn_velocity":
                 SetTurnVelocity(block);
                 break;
-            case "iq_drivetrain_turn_to_heading": //TODO: not implemented
-                block.finished = true;
+            case "iq_drivetrain_turn_to_heading":
+                TurnToHeading(block);
+                break;
+            case "iq_drivetrain_set_drive_heading":
+                TurnToHeading(block);
                 break;
             case "iq_drivetrain_turn_to_rotation": //TODO: not implemented
-                block.finished = true;
+                TurnToRotation(block);
+                break;
+            case "iq_drivetrain_set_drive_rotation": //TODO: not implemented
+                TurnToRotation(block);
                 break;
             case "iq_drivetrain_set_drive_stopping": //TODO: This is not fully implemented in VEX VR and I don't fully understand how to use it.
                 StopDriving(block);
                 break;
-            case "iq_drivetrain_set_drive_timeout": //TODO: not implemented
-                block.finished = true;
+            case "iq_drivetrain_set_drive_timeout":
+                StartCoroutine(SetDriveTimeout(block));
                 break;
+        }        
+    }
+
+    private void TurnToHeading(Block block)
+    {
+        float degrees = BlockParser.instance.ResolveBlockValue(block.values[0]);
+        
+        int turnPolarity = 1;
+
+        if(block.fields.Count == 0)
+        {
+            BlockField fakeField = new BlockField();
+            fakeField.value = "True";
+            block.fields.Add(fakeField);
         }
 
-        
+        bool andDontWait = bool.Parse(block.fields[0].value);
+
+        //Transform this block into a TurnFor block and use existing logic
+        float deltaDegreesCW = 0;
+        float deltaDegreesCCW = 0;
+        float bestDeltaDegrees = 0;
+
+        if (degrees > botRigidBody.transform.rotation.eulerAngles.y)
+        {
+            deltaDegreesCW = degrees - botRigidBody.transform.rotation.eulerAngles.y;
+            deltaDegreesCCW = (360 - degrees) + botRigidBody.transform.rotation.eulerAngles.y;
+        }
+        else
+        {
+            deltaDegreesCW = degrees + (360 - botRigidBody.transform.rotation.eulerAngles.y);
+            deltaDegreesCCW = botRigidBody.transform.rotation.eulerAngles.y - degrees;
+        }
+
+        if (deltaDegreesCCW < deltaDegreesCW)
+        {
+            bestDeltaDegrees = deltaDegreesCCW;
+            turnPolarity = -1;
+        }
+        else
+        {
+            bestDeltaDegrees = deltaDegreesCW;
+        }
+
+        BlockField turnDirectionField = new BlockField();
+        turnDirectionField.name = "TURNDIRECTION";
+
+        if (turnPolarity > 0)
+        {
+            turnDirectionField.value = "right";
+        }
+        else
+        {
+            turnDirectionField.value = "left";
+        }
+
+        block.fields.Add(turnDirectionField);
+        block.values[0].block = null;
+
+        BlockValue newVal = new BlockValue();
+        BlockShadow newShadow = new BlockShadow();
+        BlockField newField = new BlockField();
+
+        newField.value = bestDeltaDegrees.ToString();
+        newShadow.field = newField;
+        newVal.shadow = newShadow;
+        block.values[0] = newVal;
+
+        StartCoroutine(TurnFor(block));
+    }
+
+    private void TurnToRotation(Block block)
+    {
+        float degrees = BlockParser.instance.ResolveBlockValue(block.values[0]);
+
+        //Transform this block into a TurnFor block and use existing logic
+
+        if (degrees < 0)
+        {
+            degrees = 180 + (180 + degrees);
+        }
+
+        block.values[0].block = null;
+
+        BlockValue newVal = new BlockValue();
+        BlockShadow newShadow = new BlockShadow();
+        BlockField newField = new BlockField();
+
+        newField.value = degrees.ToString();
+        newShadow.field = newField;
+        newVal.shadow = newShadow;
+        block.values[0] = newVal;
+
+        TurnToHeading(block);
+    }
+
+    private IEnumerator SetDriveTimeout(Block block)
+    {
+        float timeout = BlockParser.instance.ResolveBlockValue(block.values[0]);
+        block.finished = true;
+
+        yield return new WaitForSeconds(timeout);
+
+        driveTimedOut = true;
+        StopDriving();
+
+        yield return null;
     }
 
     private IEnumerator TurnFor(Block block)
@@ -214,6 +325,7 @@ public class DrivetrainController : Singleton<DrivetrainController>
             //Debug.Log("degreesTurned= " + originalRotation);
             //Debug.Log("degreesTurned= " + botRigidBody.transform.forward);
             //Debug.Log("degreesTurned= " + degreesTurned);
+            //Debug.Log("amount= " + amount);
 
             if (degreesTurned >= amount)
             {
@@ -228,6 +340,13 @@ public class DrivetrainController : Singleton<DrivetrainController>
                     Debug.Log("Done Turning!");
                     block.finished = true;
                 }
+            }
+
+            if (driveTimedOut)
+            {
+                driveTimedOut = false;
+                doneTurning = true;
+                StopDriving();
             }
 
             yield return null;
@@ -371,6 +490,13 @@ public class DrivetrainController : Singleton<DrivetrainController>
                     Debug.Log("Done Driving!");
                     block.finished = true;
                 }         
+            }
+
+            if (driveTimedOut)
+            {
+                driveTimedOut = false;
+                doneDriving = true;
+                StopDriving();
             }
 
             yield return null;
