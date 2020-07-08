@@ -141,6 +141,10 @@ public class BlockParser : Singleton<BlockParser>
             {
                 resolvedState = VariablesController.instance.GetBool(value.block);
             }
+            else if (value.block.type.Contains("iq_sensing"))
+            {
+                resolvedState = SensingController.instance.ResolveSensorBoolValue(value.block);
+            }
             else
             {
                 resolvedState = ResolveBooleanOperator(value.block);
@@ -213,6 +217,10 @@ public class BlockParser : Singleton<BlockParser>
             else if (value.block.type.Contains("iq_operator"))
             {
                 resolvedState = ResolveBooleanOperator(value.block);
+            }
+            else if (value.block.type.Contains("iq_sensing"))
+            {
+                resolvedState = SensingController.instance.ResolveSensorBoolValue(value.block);
             }
         }
         else
@@ -364,6 +372,10 @@ public class BlockParser : Singleton<BlockParser>
             else if (value.block.type.Contains("iq_operator"))
             {
                 resolvedValue = ResolveNumericOperator(value.block);
+            }
+            else if (value.block.type.Contains("iq_sensing"))
+            {
+                resolvedValue = SensingController.instance.ResolveSensorFloatValue(value.block);
             }
         }
         else
@@ -665,6 +677,22 @@ public class BlockParser : Singleton<BlockParser>
         }
 
         return newBlock;
+    }
+
+    public List<string> GetSensorsOfType(string type)
+    {
+        List<string> sensors = new List<string>();
+
+        foreach(RConfig sensor in blockFile.rconfig)
+        {
+            Debug.Log("sensor type = " + sensor.deviceType);
+            if(sensor.deviceType == type)
+            {
+                sensors.Add(sensor.name);
+            }
+        }
+
+        return sensors;
     }
 
     //Loads the xml doc from the wrkspace of an IQBlockFile

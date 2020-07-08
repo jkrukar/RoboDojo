@@ -24,6 +24,7 @@ public class RConfig
     public List<int> port;
     public bool customName;
     public string deviceType;
+    public string name;
     public Setting setting;
 }
 

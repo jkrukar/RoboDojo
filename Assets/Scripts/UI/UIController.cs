@@ -65,6 +65,8 @@ public class UIController : MonoBehaviour
         velocityTurn.SetText((DrivetrainController.instance.botTurnVelocity*100).ToString("0.00"));
         distance0.SetText((SensingController.instance.distanceSensorValue0 * 1000).ToString("0.000"));
         distance45.SetText((SensingController.instance.distanceSensorValue45 * 1000).ToString("0.000"));
+        bumperLeft.SetText(SensingController.instance.leftBumperSensor.collisionState.ToString());
+        bumperRight.SetText(SensingController.instance.rightBumperSensor.collisionState.ToString());
 
     }
 
