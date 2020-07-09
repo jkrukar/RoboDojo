@@ -11,7 +11,7 @@ public class HomeUIController : MonoBehaviour
     public Transform arenaListContainer;
     public GameObject ArenaOptionPrefab;
     public GameObject fileOptionPrefab;
-    public static string inputFileDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\VEX_Simulator_Files";
+    public static string inputFileDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\RoboDojo_Files";
     public static string arenasFileDirectory = inputFileDirectory + "\\Arenas";
     private List<string> fileOptions = new List<string>();
     private List<string> arenaBundles = new List<string>();
@@ -217,7 +217,9 @@ public class HomeUIController : MonoBehaviour
             Directory.CreateDirectory(arenasFileDirectory);
         }
 
-        int dropdownIndex = 0;
+        fileOptions.Add("none");
+
+        int dropdownIndex = 1;
 
         foreach (string path in Directory.GetFiles(inputFileDirectory))
         {
@@ -234,6 +236,8 @@ public class HomeUIController : MonoBehaviour
                 dropdownIndex++;
             }
         }
+
+        
     }
 
     // Update is called once per frame

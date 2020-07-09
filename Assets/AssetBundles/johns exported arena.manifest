@@ -1,0 +1,60 @@
+ManifestFileVersion: 0
+CRC: 636865088
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: dc87f9e7b3514a4b1ecdae24c74db14e
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 220c94518853dcc29b270bf8b67ffb7b
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 104
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 6658abe11241f714daa6c79c28ca41ee, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1a57c1d26d5ec57438d44ce8594fa480, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: c0483d5382884b8498a157d9cb992754, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: cafce406fd2599c498671e591d4b06fa, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: bdf754d95a558394981f36522cb07a73, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 146
+  Script: {instanceID: 0}
+- Class: 157
+  Script: {instanceID: 0}
+- Class: 196
+  Script: {instanceID: 0}
+Assets:
+- Assets/Scenes/Johns Arena.unity
+Dependencies: []

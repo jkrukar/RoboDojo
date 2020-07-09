@@ -25,18 +25,29 @@ public class BlockParser : Singleton<BlockParser>
     public GameObject bot;
     public Rigidbody botRigidBody;
     public static bool gamePlaying = false;
+    public static bool autonomous = true;
 
     void Awake()
     {
         string filename = PlayerPrefs.GetString("inputFileName");
-        string filePath = HomeUIController.inputFileDirectory + "/" + filename + ".iqblocks";
-        Debug.Log("Input File: " + filePath);
-        BuildBlocksFromFile(filePath);
 
-        foreach(Block block in topBlocks) //Top blocks are always event blocks
+        if (filename.Contains("none"))
         {
-            EventsController.instance.ExecuteBlock(block);
+            autonomous = false;
         }
+        else
+        {
+            string filePath = HomeUIController.inputFileDirectory + "/" + filename + ".iqblocks";
+            Debug.Log("Input File: " + filePath);
+            BuildBlocksFromFile(filePath);
+
+            foreach (Block block in topBlocks) //Top blocks are always event blocks
+            {
+                EventsController.instance.ExecuteBlock(block);
+            }
+        }
+
+        
 
         bot = GameObject.FindGameObjectWithTag("Bot");
         botRigidBody = bot.GetComponent<Rigidbody>();

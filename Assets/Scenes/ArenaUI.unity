@@ -1453,6 +1453,7 @@ GameObject:
   - component: {fileID: 427717363}
   - component: {fileID: 427717369}
   - component: {fileID: 427717370}
+  - component: {fileID: 427717371}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1548,6 +1549,7 @@ MonoBehaviour:
   drivePolarity: 1
   turnPolarity: 1
   usePhysics: 0
+  driveTimedOut: 0
 --- !u!114 &427717367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1622,6 +1624,18 @@ MonoBehaviour:
   velocityTurn: {fileID: 1119597462}
   botTime: {fileID: 915173110}
   arenaTime: {fileID: 1643452073}
+--- !u!114 &427717371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 427717360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d6ca55aea923fe4c98705a1d18f373f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &498156507
 GameObject:
   m_ObjectHideFlags: 0

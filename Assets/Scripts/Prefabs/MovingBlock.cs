@@ -19,17 +19,24 @@ public class MovingBlock : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        trigger.triggerEvent.AddListener(OnTrigger);
+        if (trigger)
+        {
+            trigger.triggerEvent.AddListener(OnTrigger);
+        }     
 
         wayPoints.Insert(0,transform.position);
         targetPosition = wayPoints[0];
+
+        foreach(Vector3 position in wayPoints)
+        {
+            Debug.Log("position= " + position);
+        }
     }
 
     // Update is called once per frame
     void Update()
-    {
-   
-        if (!loitering && active && wayPoints.Count > 1)
+    {   
+        if (!loitering && active && wayPoints.Count >= 1)
         {
             float remainingDistance = Vector3.Distance(transform.position, targetPosition);
 
