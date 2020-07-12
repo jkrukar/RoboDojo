@@ -1,4 +1,4 @@
-# RTI2020
+# RoboDojo
 VEX IQ Simulator
 
 The motivation for this project is to get VEX users interested in Unity. The ultimate end goal is a downloadable Unity Asset that can be used to create shareable arena asset bundles. 
