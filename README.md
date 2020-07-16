@@ -11,7 +11,7 @@ It compiles code from an .iqblocks file produced by VEX's VEXcode IQ Blocks soft
 Supported Configurations and Sensors:
 
 	2-motor drivetrain
-	Gyroscope (in progress)
-	Distance Sensor (in progress)
+	Gyroscope
+	2x Distance Sensor
 	Color Sensor (in progress)
-	Bumper Sensor (in progress)
+	2x Bumper Sensor
