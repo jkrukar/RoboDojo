@@ -1,7 +1,10 @@
 ManifestFileVersion: 0
-CRC: 3668698519
+CRC: 1795867316
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
+      Name: johns exported arena
+      Dependencies: {}
+    Info_1:
       Name: arena ui
       Dependencies: {}
