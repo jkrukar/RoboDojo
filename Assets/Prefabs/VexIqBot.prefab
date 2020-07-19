@@ -4269,7 +4269,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2480077203953200163}
   - component: {fileID: 2480077203953200164}
-  - component: {fileID: 4926742607211751061}
+  - component: {fileID: 4137658998590985116}
   m_Layer: 0
   m_Name: LeftBumper
   m_TagString: Untagged
@@ -4309,7 +4309,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.027829256, y: 0.026760668, z: 0.01725158}
   m_Center: {x: -0.04429733, y: -0.027655158, z: -0.08204151}
---- !u!114 &4926742607211751061
+--- !u!114 &4137658998590985116
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4318,11 +4318,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2480077203953200162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6658abe11241f714daa6c79c28ca41ee, type: 3}
+  m_Script: {fileID: 2105857500, guid: 9ed009a3ca24a114ea1104034d28b6a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   collisionState: 0
-  raycastDistance: 0.1
 --- !u!1 &2480077203991218735
 GameObject:
   m_ObjectHideFlags: 0
@@ -4754,7 +4753,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2480077204923435747}
   - component: {fileID: 2480077204923435748}
-  - component: {fileID: 3272812587721524518}
+  - component: {fileID: 361831852506035084}
   m_Layer: 0
   m_Name: RightBumper
   m_TagString: Untagged
@@ -4794,7 +4793,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.028601978, y: 0.026760668, z: 0.017251581}
   m_Center: {x: 0.044435993, y: -0.027655158, z: -0.08204151}
---- !u!114 &3272812587721524518
+--- !u!114 &361831852506035084
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4803,11 +4802,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2480077204923435746}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6658abe11241f714daa6c79c28ca41ee, type: 3}
+  m_Script: {fileID: 2105857500, guid: 9ed009a3ca24a114ea1104034d28b6a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   collisionState: 0
-  raycastDistance: 0.1
 --- !u!1 &2480077204967550033
 GameObject:
   m_ObjectHideFlags: 0
@@ -9623,6 +9621,7 @@ GameObject:
   - component: {fileID: 5857753774205172916}
   - component: {fileID: 5857753774205172918}
   - component: {fileID: 5857753774205172919}
+  - component: {fileID: 3377355809391216772}
   m_Layer: 0
   m_Name: VexIqBot
   m_TagString: Bot
@@ -9693,9 +9692,24 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5857753774205172915}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a57c1d26d5ec57438d44ce8594fa480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameData:
+    arenaOptions: []
+  coinCount: 0
+--- !u!114 &3377355809391216772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857753774205172915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -15421392, guid: 9ed009a3ca24a114ea1104034d28b6a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gameData:

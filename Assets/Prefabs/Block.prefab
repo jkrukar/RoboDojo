@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5017680728596861613}
   - component: {fileID: 5017680728596861610}
   m_Layer: 0
-  m_Name: blueBlock
+  m_Name: Block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,10 +55,11 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 13c96d1ccb88f644cad75d8bf039dfd8, type: 2}
+  - {fileID: 2100000, guid: 11f4eb279bf866449b0ea2f542eb1745, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

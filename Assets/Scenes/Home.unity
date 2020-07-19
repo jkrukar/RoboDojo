@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 593670497d068544db62951c6f0b1bd5,
     type: 2}
   m_UseShadowmask: 1
@@ -206,6 +207,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -294,6 +296,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -417,6 +420,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -490,6 +494,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -711,6 +716,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -787,6 +793,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0.09019608, b: 0.22745098, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -916,8 +923,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1759158318}
-  - component: {fileID: 1759158317}
-  - component: {fileID: 1759158319}
+  - component: {fileID: 1759158320}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -925,23 +931,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1759158317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1759158316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78a0db3ee3aca5b4c8e81540825e8368, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arenaListContainer: {fileID: 1915054221}
-  ArenaOptionPrefab: {fileID: 1365001607077382529, guid: 53eb40e90569a034ba1cc6c538f9d205,
-    type: 3}
-  fileOptionPrefab: {fileID: 6944977151947086062, guid: d75ac554c7b568e41b34a8e5072c0279,
-    type: 3}
 --- !u!4 &1759158318
 Transform:
   m_ObjectHideFlags: 0
@@ -956,7 +945,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1759158319
+--- !u!114 &1759158320
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -965,9 +954,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1759158316}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 886e1c3998d10f4499840efa97da289f, type: 3}
+  m_Script: {fileID: -1106852606, guid: 9ed009a3ca24a114ea1104034d28b6a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arenaListContainer: {fileID: 1915054221}
+  ArenaOptionPrefab: {fileID: 1365001607077382529, guid: 53eb40e90569a034ba1cc6c538f9d205,
+    type: 3}
+  fileOptionPrefab: {fileID: 6944977151947086062, guid: d75ac554c7b568e41b34a8e5072c0279,
+    type: 3}
 --- !u!1 &1883896509
 GameObject:
   m_ObjectHideFlags: 0
@@ -1020,6 +1014,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

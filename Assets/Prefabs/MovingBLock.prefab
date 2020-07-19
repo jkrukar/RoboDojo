@@ -56,10 +56,11 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ba536219e3317184a959dce1e1741719, type: 2}
+  - {fileID: 2100000, guid: 382b838b484ef874b9399da1803a6243, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -102,11 +103,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4582917813889230908}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cafce406fd2599c498671e591d4b06fa, type: 3}
+  m_Script: {fileID: -1955190636, guid: 9ed009a3ca24a114ea1104034d28b6a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deactiveMaterial: {fileID: 2100000, guid: ba536219e3317184a959dce1e1741719, type: 2}
-  activeMaterial: {fileID: 2100000, guid: fc7ffe55f6966e64e8693ef1e3573bd5, type: 2}
+  deactiveMaterial: {fileID: 2100000, guid: 382b838b484ef874b9399da1803a6243, type: 2}
+  activeMaterial: {fileID: 2100000, guid: 76e7136e0f17b6c448c44772d4e4a419, type: 2}
   trigger: {fileID: 0}
   wayPoints: []
   speed: 2

@@ -56,10 +56,11 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e74c0519ded22674ca162f788455e585, type: 2}
+  - {fileID: 2100000, guid: f978b32bd993b6b468b170a2e73f369b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -88,11 +89,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6049195305955767140}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.3829044, y: 18.019598, z: 0.56582415}
+  m_Center: {x: -0.0008152127, y: 8.509794, z: 0.0038582385}
 --- !u!114 &2687162787603732242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,7 +103,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6049195305955767140}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0483d5382884b8498a157d9cb992754, type: 3}
+  m_Script: {fileID: 2074827623, guid: 9ed009a3ca24a114ea1104034d28b6a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   triggerEvent:
@@ -110,3 +111,4 @@ MonoBehaviour:
       m_Calls: []
   triggerType: 1
   triggerObject: {fileID: 0}
+  resetTime: 0
